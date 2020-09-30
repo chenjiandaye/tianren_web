@@ -156,9 +156,7 @@ export default {
             btkxindex: null,
             dtcxindex1: null,
             btkxindex1: null,
-            dialogVisible: false,
-            // classificationId: [], //分类id
-            // contentId: [] //分类内容id
+            dialogVisible: false
         };
     },
     methods: {
@@ -179,12 +177,10 @@ export default {
                         item.classificationContentList.forEach(item1 => {
                             if (item1.active) {
                                 has = true;
-                                // this.contentId.push(item1.id);
                                 dataObj['contentId'] = item1.id
                             }
                         });
                         if (has) {
-                            // this.classificationId.push(item.id);
                             dataObj['classificationId'] = item.id;
                             dataArr.push(dataObj)
                         }
@@ -262,7 +258,7 @@ export default {
             var data = this.pageList[index];
             var classList = data.classificationContentList[index1];
             var f = classList.active;
-            if (enname !== "colour" && classList.isDetails !== "1") {
+            if (enname !== "colour" && (classList.isDetails !== "1" || classList.isAppearance == '0')) {
                 this.colorInit();
             }
             if (f && enname !== "colour") {
