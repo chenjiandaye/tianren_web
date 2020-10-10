@@ -413,6 +413,8 @@ export default {
                 .then(res => {
                     if (res.success) {
                         var pageList = res.page;
+                        pageList.sort((a,b)=>a.sort-b.sort)
+                        pageList = pageList.filter(item => item.useable === '1')
                         pageList.forEach(item => {
                             this.showImg[item.enname] = "";
                             this.priceObj[item.enname] = 0;
