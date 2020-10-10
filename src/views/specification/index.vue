@@ -5,7 +5,7 @@
         </div>
         <div class="price">Final Price - USD {{priceCount}}</div>
         <div class="show">
-            <img src="../../assets/img/defult.png" />
+            <img src="../../assets/img/defult.png" v-show="defultImgShow" />
             <template v-for="(item,key) in showImg">
                 <img :key="key" v-if="item" :src=" $url.baseImgUrl() + item" />
             </template>
@@ -159,6 +159,15 @@ export default {
             dialogVisible: false
         };
     },
+    computed: {
+        defultImgShow() {
+            var show = true;
+            for (var key in this.showImg) {
+                this.showImg[key] !== "" && (show = false);
+            }
+            return show;
+        }
+    },
     methods: {
         dialogCancelChange() {
             this.dialogVisible = false;
@@ -170,25 +179,24 @@ export default {
         dialogOkChange() {
             this.$refs.dialogForm.validate(valid => {
                 if (valid) {
-                    var dataArr = []
+                    var dataArr = [];
                     this.pageList.forEach(item => {
                         var has = false;
-                        var dataObj = {}
+                        var dataObj = {};
                         item.classificationContentList.forEach(item1 => {
                             if (item1.active) {
                                 has = true;
-                                dataObj['contentId'] = item1.id
+                                dataObj["contentId"] = item1.id;
                             }
                         });
                         if (has) {
-                            dataObj['classificationId'] = item.id;
-                            dataArr.push(dataObj)
+                            dataObj["classificationId"] = item.id;
+                            dataArr.push(dataObj);
                         }
                     });
                     var data = Object.assign(this.form, {});
                     data["offer"] = this.priceCount;
                     data["offerStatisticsSubList"] = dataArr;
-                    console.log(data)
                     this.$axios({
                         url: "/offerStatistics/add",
                         method: "POST",
@@ -216,9 +224,9 @@ export default {
             this.dtcxindex1 = null;
             this.btkxindex1 = null;
             this.priceCount = 0;
-            this.magnifyingImg = 0;
+            this.magnifyingImg = "";
             for (var key in this.showImg) {
-                this.showImg[key] = "";
+                this.$set(this.showImg, key, "");
             }
             for (var key in this.showImg) {
                 this.priceObj[key] = 0;
@@ -241,7 +249,7 @@ export default {
         popOk(superior, index, data, index1, el) {
             this.colorInit();
             var name = superior.enname;
-            this.showImg[name] = data.wholePhoto;
+            this.$set(this.showImg, name, data.wholePhoto);
             this.magnifyingImg = data.detailsPhoto;
             this.showImg = Object.assign(this.showImg, {});
             this.$set(this.priceObj, name, data.enprice);
@@ -258,7 +266,10 @@ export default {
             var data = this.pageList[index];
             var classList = data.classificationContentList[index1];
             var f = classList.active;
-            if (enname !== "colour" && (classList.isDetails !== "1" || classList.isAppearance == '0')) {
+            if (
+                enname !== "colour" &&
+                (classList.isDetails !== "1" || classList.isAppearance == "0")
+            ) {
                 this.colorInit();
             }
             if (f && enname !== "colour") {
@@ -284,7 +295,7 @@ export default {
             this.btkxindex1 = null;
             this.$set(this.priceObj, "colour", 0);
             this.setPriceCount();
-            this.$set(this.showImg, "colorImg", "");
+            this.$set(this.showImg, "colour", "");
             for (var item of this.pageList) {
                 if (item.id === "f3d847cde26c4d02ac0a6d0c37ae9c2f") {
                     //颜色id
@@ -300,7 +311,7 @@ export default {
             }
         },
         pitchChange1(enname, f, classList, el) {
-            this.showImg[enname] = "";
+            this.$set(this.showImg, enname, "");
             this.magnifyingImg = "";
             this.$set(this.priceObj, enname, 0);
             this.setPriceCount();
@@ -313,9 +324,10 @@ export default {
             setTimeout(() => {
                 el.doClose();
             }, 1);
-            classList.isAppearance == "0" && (this.showImg[enname] = "");
+            classList.isAppearance == "0" &&
+                this.$set(this.showImg, enname, "");
             classList.isDetails == "0" &&
-                (this.showImg[enname] = classList.wholePhoto);
+                this.$set(this.showImg, enname, classList.wholePhoto);
             this.magnifyingImg = "";
             this.$set(this.priceObj, enname, classList.enprice);
             this.setPriceCount();
@@ -331,7 +343,6 @@ export default {
             classList.active = !f;
 
             var contentSubList = classList.contentSubList;
-            if (contentSubList.length == 0) return;
             for (var i = 0; i < this.pageList.length; i++) {
                 if (this.pageList[i].id == "8a323f445ccd4328aad6e84b2523b35b") {
                     //刀头齿形
@@ -361,7 +372,7 @@ export default {
                     }
                 }
             }
-            if (classList.active === true) {
+            if (classList.active === true && subListIndex !== null) {
                 this.$set(this.priceObj, enname, classList.enprice);
                 this.setPriceCount();
                 if (
@@ -372,11 +383,19 @@ export default {
                 ) {
                     this.magnifyingImg =
                         contentSubList[subListIndex].detailsPhoto;
-                    this.showImg[this.pageList[this.dtcxindex].enname] = "";
-                    this.showImg[this.pageList[this.btkxindex].enname] = "";
                     this.$set(
                         this.showImg,
-                        "colorImg",
+                        this.pageList[this.dtcxindex].enname,
+                        ""
+                    );
+                    this.$set(
+                        this.showImg,
+                        this.pageList[this.btkxindex].enname,
+                        ""
+                    );
+                    this.$set(
+                        this.showImg,
+                        "colour",
                         contentSubList[subListIndex].wholePhoto
                     );
                 }
@@ -398,13 +417,17 @@ export default {
                         break;
                     }
                 }
-                this.showImg[
-                    this.pageList[this.dtcxindex].enname
-                ] = wholePhoto1;
-                this.showImg[
-                    this.pageList[this.btkxindex].enname
-                ] = wholePhoto2;
-                this.$set(this.showImg, "colorImg", "");
+                this.$set(
+                    this.showImg,
+                    this.pageList[this.dtcxindex].enname,
+                    wholePhoto1
+                );
+                this.$set(
+                    this.showImg,
+                    this.pageList[this.btkxindex].enname,
+                    wholePhoto2
+                );
+                this.$set(this.showImg, "colour", "");
             }
         },
         getListData() {
@@ -413,10 +436,12 @@ export default {
                 .then(res => {
                     if (res.success) {
                         var pageList = res.page;
-                        pageList.sort((a,b)=>a.sort-b.sort)
-                        pageList = pageList.filter(item => item.useable === '1')
+                        pageList.sort((a, b) => a.sort - b.sort);
+                        pageList = pageList.filter(
+                            item => item.useable === "1"
+                        );
                         pageList.forEach(item => {
-                            this.showImg[item.enname] = "";
+                            this.$set(this.showImg, item.enname, "");
                             this.priceObj[item.enname] = 0;
                             var arr = [];
                             item.classificationContentList.forEach(item1 => {
