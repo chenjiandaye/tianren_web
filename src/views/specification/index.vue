@@ -64,7 +64,10 @@
                                                 v-else
                                                 :src="item1.wholePhoto ? $url.baseImgUrl()+item1.wholePhoto : ''"
                                             />
-                                            <div class="serial">{{index1+1}}</div>
+                                            <div
+                                                class="serial"
+                                                :title="item1.enname"
+                                            >{{item1.enname}}</div>
                                         </li>
                                     </el-popover>
                                 </template>
@@ -83,6 +86,7 @@
             :visible.sync="dialogVisible"
             width="746px"
             :close-on-click-modal="false"
+            :modal-append-to-body="false"
         >
             <el-form ref="dialogForm" :model="form" label-width="110px">
                 <el-form-item
@@ -126,7 +130,8 @@
 </template>
 
 <script>
-import BScroll from "better-scroll";
+// import BScroll from "better-scroll";
+import "../../utils/rem.js";
 export default {
     data() {
         return {
@@ -453,21 +458,6 @@ export default {
                             item.classificationContentList = arr;
                         });
                         this.pageList = pageList;
-                        var options = {
-                            scrollbar: {
-                                fade: false,
-                                interactive: true
-                            },
-                            stopPropagation: true,
-                            mouseWheel: true
-                        };
-                        this.$nextTick(() => {
-                            new BScroll(this.$refs.wrapper, this.options);
-                            var listWrapper = this.$refs.listWrapper;
-                            listWrapper.forEach(item => {
-                                new BScroll(item, this.options);
-                            });
-                        });
                     }
                 });
         }
@@ -479,25 +469,48 @@ export default {
 </script>
 
 <style lang='scss'>
-.specification {
+#app {
     position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+.specification {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     width: 1920px;
-    height: 1079px;
+    height: 1080px;
     background: url("~@/assets/img/bg.jpg");
     background-size: 100% 100%;
-    .bscroll-vertical-scrollbar {
-        z-index: 500 !important;
+    ::-webkit-scrollbar {
+        /*滚动条整体样式*/
+        width: 7px; /*高宽分别对应横竖滚动条的尺寸*/
+        height: 1px;
+    }
+    ::-webkit-scrollbar-thumb {
+        /*滚动条里面小方块*/
+        border-radius: 10px;
+        background: #cecece;
+    }
+    ::-webkit-scrollbar-track {
+        /*滚动条里面轨道*/
+        border-radius: 10px;
+        background: #ebebeb;
     }
     .el-dialog {
         border-radius: 20px;
         overflow: hidden;
+        width: 750px !important;
         .el-dialog__header {
             height: 60px;
             background: #efefef;
             padding: 20px 20px 10px 40px;
+            font-size: 24px;
+            font-weight: 400;
             .el-dialog__title {
                 font-size: 24px;
-                font-weight: 400;
                 color: #333333;
             }
             .el-dialog__close {
@@ -523,6 +536,8 @@ export default {
         }
         .el-dialog__footer {
             text-align: center;
+            font-size: 24px;
+            padding: 0 0 50px 0;
             .el-button {
                 width: 108px;
                 height: 45px;
@@ -555,7 +570,7 @@ export default {
         transform: translateY(-50%);
         left: 145px;
         width: 780px;
-        height: 777px;
+        height: 780px;
         & > img {
             width: 100%;
             height: 100%;
@@ -623,9 +638,10 @@ export default {
         }
         .container {
             position: relative;
-            padding: 0 100px 0 40px;
+            padding-left: 40px;
+            padding-right: 15px;
             height: 850px;
-            overflow: hidden;
+            overflow-y: auto;
 
             /deep/ .bscroll-vertical-scrollbar {
                 background: #ebebeb !important;
@@ -635,6 +651,7 @@ export default {
                 }
             }
             section {
+                margin-top: 10px;
                 .subtitle {
                     height: 42px;
                     font-size: 22px;
@@ -644,8 +661,7 @@ export default {
                 .listData {
                     position: relative;
                     max-height: 466px;
-                    overflow: hidden;
-                    margin-top: 15px;
+                    overflow-y: auto;
                     border: 1px solid transparent;
                     /* 或者是添加 padding: 1px*/
                     box-sizing: border-box;
@@ -653,17 +669,17 @@ export default {
                         overflow: hidden;
                         .item {
                             float: left;
-                            width: 140px;
-                            height: 145px;
+                            width: 110px;
+                            height: 120px;
                             background: #f7f7f7;
                             border-radius: 22px;
                             margin-right: 20px;
-                            margin-bottom: 10px;
+                            margin-bottom: 15px;
                             text-align: center;
                             display: flex;
                             justify-content: center;
                             flex-wrap: wrap;
-                            padding: 15px 0;
+                            padding: 5px 0;
                             position: relative;
                             border: 1px solid transparent;
                             outline: none;
@@ -673,13 +689,17 @@ export default {
                                 background: #f0f3fa;
                             }
                             img {
-                                max-width: 80%;
-                                max-height: 80%;
+                                max-width: 85px;
+                                max-height: 85px;
                             }
                             .serial {
                                 position: absolute;
-                                bottom: 10px;
+                                bottom: 4px;
                                 width: 100%;
+                                font-size: 16px;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
                             }
                         }
                     }
@@ -716,6 +736,7 @@ export default {
 }
 .el-popover {
     padding: 30px;
+    width: 360px !important;
 }
 .popDetailsPhoto {
     width: 206px;
