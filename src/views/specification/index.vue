@@ -255,14 +255,14 @@ export default {
         popOk(superior, index, data, index1, el) {
             this.colorInit();
             var name = superior.enname;
-            // if(data.isAppearance == '1'){
-            //     this.$set(this.showImg, name, data.wholePhoto);
-            //     this.magnifyingImg = data.detailsPhoto;
-            // }else{
-            //     this.$set(this.showImg, name, "");
-            //     this.magnifyingImg = "";
-            // }
-            // this.showImg = Object.assign(this.showImg, {});
+            if(data.isAppearance == '1'){
+                this.$set(this.showImg, name, data.wholePhoto);
+                this.magnifyingImg = data.detailsPhoto;
+            }else{
+                this.$set(this.showImg, name, "");
+                this.magnifyingImg = "";
+            }
+            this.showImg = Object.assign(this.showImg, {});
             this.$set(this.priceObj, name, data.enprice);
             this.setPriceCount();
             var list = this.pageList[index];
@@ -314,15 +314,15 @@ export default {
                         item1.active = false;
                     }
                 }
-                // item.classificationContentList.forEach(item1 => {
-                //     if (item1.active) {
-                //         this.$set(this.showImg, item.enname, item1.wholePhoto);
-                //     }
-                // });
+                item.classificationContentList.forEach(item1 => {
+                    if (item1.active && item1.isAppearance == "1") {
+                        this.$set(this.showImg, item.enname, item1.wholePhoto);
+                    }
+                });
             }
         },
         pitchChange1(enname, f, classList, el) {
-            // this.$set(this.showImg, enname, "");
+            this.$set(this.showImg, enname, "");
             this.magnifyingImg = "";
             this.$set(this.priceObj, enname, 0);
             this.setPriceCount();
@@ -342,10 +342,10 @@ export default {
                 classList.active = true;
             }
             if (classList.isAppearance == "0" && classList.isDetails == "0") {
-                // this.$set(this.showImg, enname, "");
+                this.$set(this.showImg, enname, "");
             }
             if (classList.isAppearance == "1") {
-                // this.$set(this.showImg, enname, classList.wholePhoto);
+                this.$set(this.showImg, enname, classList.wholePhoto);
             }
             this.magnifyingImg = "";
             this.$set(this.priceObj, enname, classList.enprice);
@@ -430,30 +430,30 @@ export default {
                 this.$set(this.priceObj, enname, 0);
                 this.setPriceCount();
                 this.magnifyingImg = "";
-                // var wholePhoto1 = "";
-                // var wholePhoto2 = "";
-                // for (var item of this.dtcx) {
-                //     if (item.active) {
-                //         wholePhoto1 = item.wholePhoto;
-                //         break;
-                //     }
-                // }
-                // for (var item of this.btkx) {
-                //     if (item.active) {
-                //         wholePhoto2 = item.wholePhoto;
-                //         break;
-                //     }
-                // }
-                // this.$set(
-                //     this.showImg,
-                //     this.pageList[this.dtcxindex].enname,
-                //     wholePhoto1
-                // );
-                // this.$set(
-                //     this.showImg,
-                //     this.pageList[this.btkxindex].enname,
-                //     wholePhoto2
-                // );
+                var wholePhoto1 = "";
+                var wholePhoto2 = "";
+                for (var item of this.dtcx) {
+                    if (item.active && item.isAppearance == "1") {
+                        wholePhoto1 = item.wholePhoto;
+                        break;
+                    }
+                }
+                for (var item of this.btkx) {
+                    if (item.active && item.isAppearance == "1") {
+                        wholePhoto2 = item.wholePhoto;
+                        break;
+                    }
+                }
+                this.$set(
+                    this.showImg,
+                    this.pageList[this.dtcxindex].enname,
+                    wholePhoto1
+                );
+                this.$set(
+                    this.showImg,
+                    this.pageList[this.btkxindex].enname,
+                    wholePhoto2
+                );
                 this.$set(this.showImg, "colour", "");
             }
         },
