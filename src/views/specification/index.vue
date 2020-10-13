@@ -52,14 +52,15 @@
                                             >取消</div>
                                         </div>
                                         <li
-                                            :class="item.classificationContentList[index1].active ? 'item active' : 'item'"
+                                            :class="item.classificationContentList[index1].active && item.name == '颜色' ? 'item active colorItem' : item.name == '颜色' ? 'item colorItem' : item.classificationContentList[index1].active ? 'item active' : 'item'"
                                             @click="itemClick(index,index1,item.enname,$refs[`popover${index}-${index1}`][0])"
                                             slot="reference"
                                         >
-                                            <img
+                                            <div
+                                                class="colorBox"
                                                 v-if="item.name == '颜色'"
-                                                :src="item1.colourPhoto ? $url.baseImgUrl()+item1.colourPhoto : ''"
-                                            />
+                                                :style="{background:item1.colour}"
+                                            ></div>
                                             <img
                                                 v-else
                                                 :src="item1.wholePhoto ? $url.baseImgUrl()+item1.wholePhoto : ''"
@@ -254,9 +255,14 @@ export default {
         popOk(superior, index, data, index1, el) {
             this.colorInit();
             var name = superior.enname;
-            this.$set(this.showImg, name, data.wholePhoto);
-            this.magnifyingImg = data.detailsPhoto;
-            this.showImg = Object.assign(this.showImg, {});
+            // if(data.isAppearance == '1'){
+            //     this.$set(this.showImg, name, data.wholePhoto);
+            //     this.magnifyingImg = data.detailsPhoto;
+            // }else{
+            //     this.$set(this.showImg, name, "");
+            //     this.magnifyingImg = "";
+            // }
+            // this.showImg = Object.assign(this.showImg, {});
             this.$set(this.priceObj, name, data.enprice);
             this.setPriceCount();
             var list = this.pageList[index];
@@ -308,15 +314,15 @@ export default {
                         item1.active = false;
                     }
                 }
-                item.classificationContentList.forEach(item1 => {
-                    if (item1.active) {
-                        this.$set(this.showImg, item.enname, item1.wholePhoto);
-                    }
-                });
+                // item.classificationContentList.forEach(item1 => {
+                //     if (item1.active) {
+                //         this.$set(this.showImg, item.enname, item1.wholePhoto);
+                //     }
+                // });
             }
         },
         pitchChange1(enname, f, classList, el) {
-            this.$set(this.showImg, enname, "");
+            // this.$set(this.showImg, enname, "");
             this.magnifyingImg = "";
             this.$set(this.priceObj, enname, 0);
             this.setPriceCount();
@@ -326,20 +332,24 @@ export default {
             }, 1);
         },
         pitchChange2(enname, classList, data, el) {
-            setTimeout(() => {
-                el.doClose();
-            }, 1);
-            classList.isAppearance == "0" &&
-                this.$set(this.showImg, enname, "");
-            classList.isDetails == "0" &&
-                this.$set(this.showImg, enname, classList.wholePhoto);
+            if (classList.isDetails == "0") {
+                setTimeout(() => {
+                    el.doClose();
+                }, 1);
+                data.classificationContentList.forEach(item => {
+                    item.active = false;
+                });
+                classList.active = true;
+            }
+            if (classList.isAppearance == "0" && classList.isDetails == "0") {
+                // this.$set(this.showImg, enname, "");
+            }
+            if (classList.isAppearance == "1") {
+                // this.$set(this.showImg, enname, classList.wholePhoto);
+            }
             this.magnifyingImg = "";
             this.$set(this.priceObj, enname, classList.enprice);
             this.setPriceCount();
-            data.classificationContentList.forEach(item => {
-                item.active = false;
-            });
-            classList.active = true;
         },
         pitchColorChange(enname, classList, data, f) {
             data.classificationContentList.forEach(item => {
@@ -348,6 +358,10 @@ export default {
             classList.active = !f;
 
             var contentSubList = classList.contentSubList;
+            if(contentSubList.length == 0){
+                this.$message.warning('没有找到对应的锯片,请重新选择')
+                return
+            }
             for (var i = 0; i < this.pageList.length; i++) {
                 if (this.pageList[i].id == "8a323f445ccd4328aad6e84b2523b35b") {
                     //刀头齿形
@@ -361,6 +375,8 @@ export default {
                 }
             }
             var subListIndex = null;
+            var currentDtcx = null;
+            var currentBtkx = null;
             for (var k = 0; k < contentSubList.length; k++) {
                 var pass = contentSubList[k].pass;
                 var toothProfile = contentSubList[k].toothProfile;
@@ -372,12 +388,18 @@ export default {
                                 this.btkxindex1 = j;
                                 subListIndex = k;
                                 console.log(i, j, k);
+                                currentDtcx = this.dtcx[i]
+                                currentBtkx = this.btkx[j]
                             }
                         }
                     }
                 }
             }
             if (classList.active === true && subListIndex !== null) {
+                if(!currentDtcx.active || !currentBtkx.active){
+                    this.$message.warning('没有找到对应的锯片,请重新选择')
+                    return
+                }
                 this.$set(this.priceObj, enname, classList.enprice);
                 this.setPriceCount();
                 if (
@@ -408,30 +430,30 @@ export default {
                 this.$set(this.priceObj, enname, 0);
                 this.setPriceCount();
                 this.magnifyingImg = "";
-                var wholePhoto1 = "";
-                var wholePhoto2 = "";
-                for (var item of this.dtcx) {
-                    if (item.active) {
-                        wholePhoto1 = item.wholePhoto;
-                        break;
-                    }
-                }
-                for (var item of this.btkx) {
-                    if (item.active) {
-                        wholePhoto2 = item.wholePhoto;
-                        break;
-                    }
-                }
-                this.$set(
-                    this.showImg,
-                    this.pageList[this.dtcxindex].enname,
-                    wholePhoto1
-                );
-                this.$set(
-                    this.showImg,
-                    this.pageList[this.btkxindex].enname,
-                    wholePhoto2
-                );
+                // var wholePhoto1 = "";
+                // var wholePhoto2 = "";
+                // for (var item of this.dtcx) {
+                //     if (item.active) {
+                //         wholePhoto1 = item.wholePhoto;
+                //         break;
+                //     }
+                // }
+                // for (var item of this.btkx) {
+                //     if (item.active) {
+                //         wholePhoto2 = item.wholePhoto;
+                //         break;
+                //     }
+                // }
+                // this.$set(
+                //     this.showImg,
+                //     this.pageList[this.dtcxindex].enname,
+                //     wholePhoto1
+                // );
+                // this.$set(
+                //     this.showImg,
+                //     this.pageList[this.btkxindex].enname,
+                //     wholePhoto2
+                // );
                 this.$set(this.showImg, "colour", "");
             }
         },
@@ -684,6 +706,15 @@ export default {
                             border: 1px solid transparent;
                             outline: none;
                             cursor: pointer;
+                            &.colorItem {
+                                background: #fff;
+                                height: 80px;
+                                .colorBox {
+                                    width: 40px;
+                                    height: 40px;
+                                    border-radius: 50%;
+                                }
+                            }
                             &.active {
                                 border: 1px solid #246faf;
                                 background: #f0f3fa;
