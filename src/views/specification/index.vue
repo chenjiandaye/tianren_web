@@ -33,7 +33,7 @@
                                         width="360"
                                         trigger="click"
                                         :key="item1.id"
-                                        :disabled="item1.isDetails == '0' || item.name == '颜色'"
+                                        :disabled="item1.isDetails == '0' || item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'"
                                     >
                                         <img
                                             :src="item1.detailsPhoto ? $url.baseImgUrl()+item1.detailsPhoto : ''"
@@ -52,13 +52,13 @@
                                             >取消</div>
                                         </div>
                                         <li
-                                            :class="item.classificationContentList[index1].active && item.name == '颜色' ? 'item active colorItem' : item.name == '颜色' ? 'item colorItem' : item.classificationContentList[index1].active ? 'item active' : 'item'"
-                                            @click="itemClick(index,index1,item.enname,$refs[`popover${index}-${index1}`][0])"
+                                            :class="item.classificationContentList[index1].active && item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item active colorItem' : item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item colorItem' : item.classificationContentList[index1].active ? 'item active' : 'item'"
+                                            @click="itemClick(index,index1,item.id,$refs[`popover${index}-${index1}`][0])"
                                             slot="reference"
                                         >
                                             <div
                                                 class="colorBox"
-                                                v-if="item.name == '颜色'"
+                                                v-if="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'"
                                                 :style="{background:item1.colour}"
                                             ></div>
                                             <img
@@ -101,22 +101,22 @@
                 </el-form-item>
                 <el-form-item
                     label="客户名称"
-                    prop="name"
+                    prop="customerName"
                     :rules="[
       { required: true, message: '请输入客户名称', trigger: 'blur' }
     ]"
                 >
-                    <el-input v-model="form.name" placeholder="请输入内容"></el-input>
+                    <el-input v-model="form.customerName" placeholder="请输入内容"></el-input>
                 </el-form-item>
                 <el-form-item
                     label="联系电话"
-                    prop="phone"
+                    prop="customerPhone"
                     :rules="[
       { required: true, message: '请输入联系电话', trigger: 'blur' },
       { pattern:/^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/, message: '请输入合法手机号/电话号', trigger: 'blur' }
     ]"
                 >
-                    <el-input v-model="form.phone" placeholder="请输入内容"></el-input>
+                    <el-input v-model="form.customerPhone" placeholder="请输入内容"></el-input>
                 </el-form-item>
                 <el-form-item label="备注" prop="remarks">
                     <el-input v-model="form.remarks" type="textarea" placeholder="请输入内容"></el-input>
@@ -148,8 +148,8 @@ export default {
             },
             form: {
                 sawBladeName: "",
-                name: "",
-                phone: "",
+                customerName: "",
+                customerPhone: "",
                 remarks: ""
             },
             showImg: {},
@@ -201,7 +201,7 @@ export default {
                         }
                     });
                     var data = Object.assign(this.form, {});
-                    data["offer"] = this.priceCount;
+                    data["quotedPrice"] = this.priceCount;
                     data["offerStatisticsSubList"] = dataArr;
                     this.$axios({
                         url: "/offerStatistics/add",
@@ -253,15 +253,14 @@ export default {
             this.priceCount = count;
         },
         popOk(superior, index, data, index1, el) {
-            this.colorInit();
-            var name = superior.enname;
-            if(data.isAppearance == '1'){
+            // this.colorInit();
+            var name = superior.id;
+            if (data.isAppearance == "1") {
                 this.$set(this.showImg, name, data.wholePhoto);
-                this.magnifyingImg = data.detailsPhoto;
-            }else{
+            } else {
                 this.$set(this.showImg, name, "");
-                this.magnifyingImg = "";
             }
+            this.magnifyingImg = data.detailsPhoto;
             this.showImg = Object.assign(this.showImg, {});
             this.$set(this.priceObj, name, data.enprice);
             this.setPriceCount();
@@ -272,28 +271,20 @@ export default {
             data.active = true;
             this.$forceUpdate();
             el.doClose();
+            this.seekColorItem();
         },
-        itemClick(index, index1, enname, el) {
+        itemClick(index, index1, id, el) {
             var data = this.pageList[index];
             var classList = data.classificationContentList[index1];
             var f = classList.active;
-            if (
-                enname !== "colour" &&
-                (classList.isDetails !== "1" || classList.isAppearance == "0")
-            ) {
-                this.colorInit();
+            if (f && id !== "f3d847cde26c4d02ac0a6d0c37ae9c2f") {
+                this.pitchChange1(id, f, classList, el);
             }
-            if (f && enname !== "colour") {
-                this.pitchChange1(enname, f, classList, el);
+            if (!f && id !== "f3d847cde26c4d02ac0a6d0c37ae9c2f") {
+                this.pitchChange2(id, classList, data, el);
             }
-            if (
-                !f &&
-                (classList.isAppearance == "0" || classList.isDetails == "0")
-            ) {
-                this.pitchChange2(enname, classList, data, el);
-            }
-            if (enname === "colour") {
-                this.pitchColorChange(enname, classList, data, f);
+            if (id === "f3d847cde26c4d02ac0a6d0c37ae9c2f") {
+                this.pitchColorChange(id, classList, data, f);
             }
             this.$set(this.pageList, index, data);
         },
@@ -304,9 +295,13 @@ export default {
             this.btkxindex = null;
             this.dtcxindex1 = null;
             this.btkxindex1 = null;
-            this.$set(this.priceObj, "colour", 0);
+            this.$set(
+                this.priceObj,
+                "colf3d847cde26c4d02ac0a6d0c37ae9c2four",
+                0
+            );
             this.setPriceCount();
-            this.$set(this.showImg, "colour", "");
+            this.$set(this.showImg, "f3d847cde26c4d02ac0a6d0c37ae9c2f", "");
             for (var item of this.pageList) {
                 if (item.id === "f3d847cde26c4d02ac0a6d0c37ae9c2f") {
                     //颜色id
@@ -316,22 +311,22 @@ export default {
                 }
                 item.classificationContentList.forEach(item1 => {
                     if (item1.active && item1.isAppearance == "1") {
-                        this.$set(this.showImg, item.enname, item1.wholePhoto);
+                        this.$set(this.showImg, item.id, item1.wholePhoto);
                     }
                 });
             }
         },
-        pitchChange1(enname, f, classList, el) {
-            this.$set(this.showImg, enname, "");
+        pitchChange1(id, f, classList, el) {
+            this.$set(this.showImg, id, "");
             this.magnifyingImg = "";
-            this.$set(this.priceObj, enname, 0);
+            this.$set(this.priceObj, id, 0);
             this.setPriceCount();
             classList.active = !f;
             setTimeout(() => {
                 el.doClose();
             }, 1);
         },
-        pitchChange2(enname, classList, data, el) {
+        pitchChange2(id, classList, data, el) {
             if (classList.isDetails == "0") {
                 setTimeout(() => {
                     el.doClose();
@@ -340,27 +335,79 @@ export default {
                     item.active = false;
                 });
                 classList.active = true;
-            }
-            if (classList.isAppearance == "0" && classList.isDetails == "0") {
-                this.$set(this.showImg, enname, "");
+                this.seekColorItem();
             }
             if (classList.isAppearance == "1") {
-                this.$set(this.showImg, enname, classList.wholePhoto);
+                this.$set(this.showImg, id, classList.wholePhoto);
             }
-            this.magnifyingImg = "";
-            this.$set(this.priceObj, enname, classList.enprice);
+            if (classList.isAppearance == "0") {
+                this.$set(this.showImg, id, "");
+            }
+            // console.log(this.pageList)
+            this.$set(this.priceObj, id, classList.enprice);
             this.setPriceCount();
         },
-        pitchColorChange(enname, classList, data, f) {
+        seekColorItem() {
+            var colorData = null;
+            var dtcxData = null;
+            var btkxData = null;
+            for (var i = 0; i < this.pageList.length; i++) {
+                if (this.pageList[i].id == "f3d847cde26c4d02ac0a6d0c37ae9c2f") {
+                    //颜色
+                    colorData = this.pageList[i].classificationContentList;
+                }
+                if (this.pageList[i].id == "8a323f445ccd4328aad6e84b2523b35b") {
+                    //刀头齿形
+                    dtcxData = this.pageList[i].classificationContentList;
+                }
+                if (this.pageList[i].id == "a0a897acabc948789fa70d2eb4a309e5") {
+                    //本体孔型
+                    btkxData = this.pageList[i].classificationContentList;
+                }
+            }
+            if (!colorData) return;
+            var activeColor = null;
+            for (var item of colorData) {
+                if (item.active) {
+                    activeColor = item;
+                    break;
+                }
+            }
+            if (!activeColor) return;
+            var activeColorList = activeColor.contentSubList;
+            var currentDtcx = {};
+            var currentBtkx = {};
+            for (var item1 of activeColorList) {
+                var pass = item1.pass;
+                var toothProfile = item1.toothProfile;
+                for (var item2 of dtcxData) {
+                    if (item2.id == toothProfile && item2.active) {
+                        for (var item3 of btkxData) {
+                            if (item3.id == pass && item3.active) {
+                                currentDtcx = item2;
+                                currentBtkx = item3;
+                            }
+                        }
+                    }
+                }
+            }
+            if (
+                Object.keys(currentDtcx).length == 0 &&
+                Object.keys(currentBtkx).length == 0
+            ) {
+                this.$message.warning("没有找到对应的锯片,请重新选择");
+            }
+        },
+        pitchColorChange(id, classList, data, f) {
             data.classificationContentList.forEach(item => {
                 item.active = false;
             });
             classList.active = !f;
 
             var contentSubList = classList.contentSubList;
-            if(contentSubList.length == 0){
-                this.$message.warning('没有找到对应的锯片,请重新选择')
-                return
+            if (contentSubList.length == 0) {
+                this.$message.warning("没有找到对应的锯片,请重新选择");
+                return;
             }
             for (var i = 0; i < this.pageList.length; i++) {
                 if (this.pageList[i].id == "8a323f445ccd4328aad6e84b2523b35b") {
@@ -375,32 +422,40 @@ export default {
                 }
             }
             var subListIndex = null;
-            var currentDtcx = null;
-            var currentBtkx = null;
+            var currentDtcx = {};
+            var currentBtkx = {};
             for (var k = 0; k < contentSubList.length; k++) {
                 var pass = contentSubList[k].pass;
                 var toothProfile = contentSubList[k].toothProfile;
                 for (var i = 0; i < this.dtcx.length; i++) {
-                    if (this.dtcx[i].id == toothProfile) {
+                    if (
+                        this.dtcx[i].id == toothProfile &&
+                        this.dtcx[i].active
+                    ) {
                         for (var j = 0; j < this.btkx.length; j++) {
-                            if (this.btkx[j].id == pass) {
+                            if (
+                                this.btkx[j].id == pass &&
+                                this.btkx[j].active
+                            ) {
                                 this.dtcxindex1 = i;
                                 this.btkxindex1 = j;
                                 subListIndex = k;
                                 console.log(i, j, k);
-                                currentDtcx = this.dtcx[i]
-                                currentBtkx = this.btkx[j]
+                                currentDtcx = this.dtcx[i];
+                                currentBtkx = this.btkx[j];
                             }
                         }
                     }
                 }
             }
+            if (
+                (classList.active === true && !currentDtcx.active) ||
+                !currentBtkx.active
+            ) {
+                this.$message.warning("没有找到对应的锯片,请重新选择");
+            }
             if (classList.active === true && subListIndex !== null) {
-                if(!currentDtcx.active || !currentBtkx.active){
-                    this.$message.warning('没有找到对应的锯片,请重新选择')
-                    return
-                }
-                this.$set(this.priceObj, enname, classList.enprice);
+                this.$set(this.priceObj, id, classList.enprice);
                 this.setPriceCount();
                 if (
                     this.dtcxindex != null &&
@@ -412,22 +467,22 @@ export default {
                         contentSubList[subListIndex].detailsPhoto;
                     this.$set(
                         this.showImg,
-                        this.pageList[this.dtcxindex].enname,
+                        this.pageList[this.dtcxindex].id,
                         ""
                     );
                     this.$set(
                         this.showImg,
-                        this.pageList[this.btkxindex].enname,
+                        this.pageList[this.btkxindex].id,
                         ""
                     );
                     this.$set(
                         this.showImg,
-                        "colour",
+                        "f3d847cde26c4d02ac0a6d0c37ae9c2f",
                         contentSubList[subListIndex].wholePhoto
                     );
                 }
             } else {
-                this.$set(this.priceObj, enname, 0);
+                this.$set(this.priceObj, id, 0);
                 this.setPriceCount();
                 this.magnifyingImg = "";
                 var wholePhoto1 = "";
@@ -446,15 +501,15 @@ export default {
                 }
                 this.$set(
                     this.showImg,
-                    this.pageList[this.dtcxindex].enname,
+                    this.pageList[this.dtcxindex].id,
                     wholePhoto1
                 );
                 this.$set(
                     this.showImg,
-                    this.pageList[this.btkxindex].enname,
+                    this.pageList[this.btkxindex].id,
                     wholePhoto2
                 );
-                this.$set(this.showImg, "colour", "");
+                this.$set(this.showImg, "f3d847cde26c4d02ac0a6d0c37ae9c2f", "");
             }
         },
         getListData() {
@@ -468,8 +523,8 @@ export default {
                             item => item.useable === "1"
                         );
                         pageList.forEach(item => {
-                            this.$set(this.showImg, item.enname, "");
-                            this.priceObj[item.enname] = 0;
+                            this.$set(this.showImg, item.id, "");
+                            this.priceObj[item.id] = 0;
                             var arr = [];
                             item.classificationContentList.forEach(item1 => {
                                 item1["active"] = false;
@@ -682,7 +737,7 @@ export default {
                 }
                 .listData {
                     position: relative;
-                    max-height: 466px;
+                    max-height: 390px;
                     overflow-y: auto;
                     border: 1px solid transparent;
                     /* 或者是添加 padding: 1px*/
@@ -691,8 +746,8 @@ export default {
                         overflow: hidden;
                         .item {
                             float: left;
-                            width: 110px;
-                            height: 120px;
+                            width: 105px;
+                            height: 115px;
                             background: #f7f7f7;
                             border-radius: 22px;
                             margin-right: 20px;
@@ -725,7 +780,7 @@ export default {
                             }
                             .serial {
                                 position: absolute;
-                                bottom: 4px;
+                                bottom: 2.5px;
                                 width: 100%;
                                 font-size: 16px;
                                 overflow: hidden;
