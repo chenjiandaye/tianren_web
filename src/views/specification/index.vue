@@ -322,6 +322,7 @@ export default {
             this.$set(this.priceObj, id, 0);
             this.setPriceCount();
             classList.active = !f;
+            this.seekColorItem();
             setTimeout(() => {
                 el.doClose();
             }, 1);
@@ -343,9 +344,10 @@ export default {
             if (classList.isAppearance == "0") {
                 this.$set(this.showImg, id, "");
             }
-            // console.log(this.pageList)
-            this.$set(this.priceObj, id, classList.enprice);
-            this.setPriceCount();
+            if (classList.isDetails != "1") {
+                this.$set(this.priceObj, id, classList.enprice);
+                this.setPriceCount();
+            }            
         },
         seekColorItem() {
             var colorData = null;
@@ -354,7 +356,7 @@ export default {
             for (var i = 0; i < this.pageList.length; i++) {
                 if (this.pageList[i].id == "f3d847cde26c4d02ac0a6d0c37ae9c2f") {
                     //颜色
-                    colorData = this.pageList[i].classificationContentList;
+                    colorData = this.pageList[i];
                 }
                 if (this.pageList[i].id == "8a323f445ccd4328aad6e84b2523b35b") {
                     //刀头齿形
@@ -367,7 +369,7 @@ export default {
             }
             if (!colorData) return;
             var activeColor = null;
-            for (var item of colorData) {
+            for (var item of colorData.classificationContentList) {
                 if (item.active) {
                     activeColor = item;
                     break;
@@ -377,6 +379,7 @@ export default {
             var activeColorList = activeColor.contentSubList;
             var currentDtcx = {};
             var currentBtkx = {};
+            var currentList = {};
             for (var item1 of activeColorList) {
                 var pass = item1.pass;
                 var toothProfile = item1.toothProfile;
@@ -386,6 +389,7 @@ export default {
                             if (item3.id == pass && item3.active) {
                                 currentDtcx = item2;
                                 currentBtkx = item3;
+                                currentList = item1
                             }
                         }
                     }
@@ -396,6 +400,43 @@ export default {
                 Object.keys(currentBtkx).length == 0
             ) {
                 this.$message.warning("没有找到对应的锯片,请重新选择");
+                this.$set(this.priceObj, colorData.id, 0);
+                this.setPriceCount();
+                this.$set(this.showImg, colorData.id, "");
+                var wholePhoto1 = "";
+                var wholePhoto2 = "";
+                for (var item of currentDtcx) {
+                    if (item.active && item.isAppearance == "1") {
+                        wholePhoto1 = item.wholePhoto;
+                        break;
+                    }
+                }
+                for (var item of currentBtkx) {
+                    if (item.active && item.isAppearance == "1") {
+                        wholePhoto2 = item.wholePhoto;
+                        break;
+                    }
+                }
+                this.$set(
+                    this.showImg,
+                    currentDtcx.id,
+                    wholePhoto1
+                );
+                this.$set(
+                    this.showImg,
+                    currentBtkx.id,
+                    wholePhoto2
+                );
+            } else {
+                this.$set(this.priceObj, colorData.id, activeColor.enprice);
+                this.setPriceCount();
+                this.$set(this.showImg, currentDtcx.id, "");
+                this.$set(this.showImg, currentBtkx.id, "");
+                this.$set(
+                    this.showImg,
+                    "f3d847cde26c4d02ac0a6d0c37ae9c2f",
+                    currentList.wholePhoto
+                );
             }
         },
         pitchColorChange(id, classList, data, f) {
@@ -463,8 +504,6 @@ export default {
                     this.dtcxindex1 != null &&
                     this.btkxindex1 != null
                 ) {
-                    this.magnifyingImg =
-                        contentSubList[subListIndex].detailsPhoto;
                     this.$set(
                         this.showImg,
                         this.pageList[this.dtcxindex].id,
