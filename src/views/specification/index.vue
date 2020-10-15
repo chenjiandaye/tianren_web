@@ -212,6 +212,9 @@ export default {
                             this.$message.success(res.msg);
                             this.resetChange();
                             this.dialogVisible = false;
+                            for (var key in this.form) {
+                                this.form[key] = "";
+                            }
                         } else {
                             this.$message.error(res.msg);
                         }
@@ -260,7 +263,9 @@ export default {
             } else {
                 this.$set(this.showImg, name, "");
             }
-            this.magnifyingImg = data.detailsPhoto;
+            if(superior.id == "a0a897acabc948789fa70d2eb4a309e5" || superior.id == "8a323f445ccd4328aad6e84b2523b35b"){ //刀头 孔型id
+                this.magnifyingImg = data.detailsPhoto;
+            }
             this.showImg = Object.assign(this.showImg, {});
             this.$set(this.priceObj, name, data.enprice);
             this.setPriceCount();
@@ -337,6 +342,9 @@ export default {
                 });
                 classList.active = true;
                 this.seekColorItem();
+                if(data.id != "a0a897acabc948789fa70d2eb4a309e5" || data.id != "8a323f445ccd4328aad6e84b2523b35b"){ //刀头 孔型id
+                    this.magnifyingImg = ''
+                }
             }
             if (classList.isAppearance == "1") {
                 this.$set(this.showImg, id, classList.wholePhoto);
@@ -347,7 +355,7 @@ export default {
             if (classList.isDetails != "1") {
                 this.$set(this.priceObj, id, classList.enprice);
                 this.setPriceCount();
-            }            
+            }
         },
         seekColorItem() {
             var colorData = null;
@@ -389,7 +397,7 @@ export default {
                             if (item3.id == pass && item3.active) {
                                 currentDtcx = item2;
                                 currentBtkx = item3;
-                                currentList = item1
+                                currentList = item1;
                             }
                         }
                     }
@@ -400,33 +408,26 @@ export default {
                 Object.keys(currentBtkx).length == 0
             ) {
                 this.$message.warning("没有找到对应的锯片,请重新选择");
+                this.magnifyingImg = "";
                 this.$set(this.priceObj, colorData.id, 0);
                 this.setPriceCount();
                 this.$set(this.showImg, colorData.id, "");
                 var wholePhoto1 = "";
                 var wholePhoto2 = "";
-                for (var item of currentDtcx) {
+                for (var item of dtcxData) {
                     if (item.active && item.isAppearance == "1") {
                         wholePhoto1 = item.wholePhoto;
                         break;
                     }
                 }
-                for (var item of currentBtkx) {
+                for (var item of btkxData) {
                     if (item.active && item.isAppearance == "1") {
                         wholePhoto2 = item.wholePhoto;
                         break;
                     }
                 }
-                this.$set(
-                    this.showImg,
-                    currentDtcx.id,
-                    wholePhoto1
-                );
-                this.$set(
-                    this.showImg,
-                    currentBtkx.id,
-                    wholePhoto2
-                );
+                this.$set(this.showImg, currentDtcx.id, wholePhoto1);
+                this.$set(this.showImg, currentBtkx.id, wholePhoto2);
             } else {
                 this.$set(this.priceObj, colorData.id, activeColor.enprice);
                 this.setPriceCount();
@@ -819,7 +820,7 @@ export default {
                             }
                             .serial {
                                 position: absolute;
-                                bottom: 2.5px;
+                                bottom: 1.5px;
                                 width: 100%;
                                 font-size: 16px;
                                 overflow: hidden;
