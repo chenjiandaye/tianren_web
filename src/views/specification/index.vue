@@ -66,6 +66,10 @@
                                                     v-if="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'"
                                                     :style="{background:item1.colour}"
                                                 >
+                                                    <div
+                                                        class="inCircle"
+                                                        :style="{borderColor:item1.colour}"
+                                                    ></div>
                                                 </div>
                                                 <img
                                                     v-else
@@ -445,12 +449,7 @@ export default {
                 this.$set(this.showImg, currentDtcx.id, wholePhoto1);
                 this.$set(this.showImg, currentBtkx.id, wholePhoto2);
             } else {
-                if(currentBtkx.detailsPhoto && currentBtkx.isDetails == '1'){
-                    this.magnifyingImg = currentBtkx.detailsPhoto;
-                }
-                if(currentDtcx.detailsPhoto && currentDtcx.isDetails == '1'){
-                    this.magnifyingImg = currentDtcx.detailsPhoto;
-                }
+                this.setMagnifying(currentBtkx, currentDtcx);
                 this.$set(this.priceObj, colorData.id, activeColor.enprice);
                 this.setPriceCount();
                 this.$set(this.showImg, currentDtcx.id, "");
@@ -460,6 +459,35 @@ export default {
                     "f3d847cde26c4d02ac0a6d0c37ae9c2f",
                     currentList.wholePhoto
                 );
+            }
+        },
+        setMagnifying(kx, cx) {
+            var data = this.pageList;
+            var f = true;
+            for (var item1 of data) {
+                if (
+                    item1.id != "f3d847cde26c4d02ac0a6d0c37ae9c2f" &&
+                    item1.id != "8a323f445ccd4328aad6e84b2523b35b" &&
+                    item1.id != "a0a897acabc948789fa70d2eb4a309e5"
+                ) {
+                    //颜色，齿形，孔型
+                    for (var item2 of item1.classificationContentList) {
+                        if (item2.active) {
+                            f = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (f) {
+                if (kx.detailsPhoto && kx.isDetails == "1") {
+                    this.magnifyingImg = kx.detailsPhoto;
+                }
+                if (cx.detailsPhoto && cx.isDetails == "1") {
+                    this.magnifyingImg = cx.detailsPhoto;
+                }
+            } else {
+                this.magnifyingImg = "";
             }
         },
         pitchColorChange(id, classList, data, f) {
@@ -521,12 +549,7 @@ export default {
             if (classList.active === true && subListIndex !== null) {
                 this.$set(this.priceObj, id, classList.enprice);
                 this.setPriceCount();
-                if(currentBtkx.detailsPhoto && currentBtkx.isDetails == '1'){
-                    this.magnifyingImg = currentBtkx.detailsPhoto;
-                }
-                if(currentDtcx.detailsPhoto && currentDtcx.isDetails == '1'){
-                    this.magnifyingImg = currentDtcx.detailsPhoto;
-                }
+                this.setMagnifying(currentBtkx, currentDtcx);
                 if (
                     this.dtcxindex != null &&
                     this.btkxindex != null &&
@@ -692,8 +715,8 @@ export default {
     }
     .logo {
         position: absolute;
-        left: 53px;
-        top: 53px;
+        left: 45px;
+        top: 45px;
         .logo_img {
             width: 124px;
             height: 152px;
@@ -713,7 +736,7 @@ export default {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        left: 145px;
+        left: 180px;
         width: 780px;
         height: 780px;
         & > img {
@@ -733,14 +756,14 @@ export default {
                 top: 0;
                 width: 105px;
                 height: 105px;
-                border: 14px solid #df0000;
+                border: 8px solid #df0000;
                 border-radius: 50%;
                 &::after {
                     content: "";
                     display: block;
                     width: 10px;
                     height: 1px;
-                    background: #fff;
+                    background: #f7f7f7;
                     position: absolute;
                     right: 0px;
                     bottom: -7px;
@@ -753,7 +776,7 @@ export default {
                 top: 96px;
                 width: 222px;
                 height: 163px;
-                border: 14px solid #df0000;
+                border: 8px solid #df0000;
                 border-radius: 20px;
                 background: #fff;
                 text-align: center;
@@ -816,7 +839,7 @@ export default {
                     overflow-y: auto;
                     border: 1px solid transparent;
                     box-sizing: border-box;
-                    
+
                     &::-webkit-scrollbar {
                         /*滚动条整体样式*/
                         width: 8px; /*高宽分别对应横竖滚动条的尺寸*/
@@ -850,29 +873,34 @@ export default {
                                         height: 40px;
                                         border-radius: 50%;
                                         position: relative;
+                                        .inCircle {
+                                            display: none;
+                                        }
                                     }
-                                    &.active{
+                                    &.active {
                                         border: none;
                                         background: transparent;
-                                        .colorBox{
-                                            &::after{
-                                                content: '';
+                                        .colorBox {
+                                            .inCircle {
                                                 display: block;
                                                 position: absolute;
                                                 left: 50%;
                                                 top: 50%;
-                                                transform: translate(-50%, -50%);
-                                                border: 1px solid #000;
+                                                transform: translate(
+                                                    -50%,
+                                                    -50%
+                                                );
+                                                border: 1px solid;
                                                 width: 50px;
                                                 height: 50px;
                                                 border-radius: 50%;
                                             }
-                                        }                                        
+                                        }
                                     }
                                 }
                                 &.active {
-                                    border: 1px solid #2D479C;
-                                    background: #F7F7F7;
+                                    border: 1px solid #2d479c;
+                                    background: #f7f7f7;
                                 }
                                 img {
                                     max-width: 85px;
@@ -912,12 +940,12 @@ export default {
                 &.reset {
                     margin-right: 15px;
                     color: #ffffff;
-                    background: #2D479C;
+                    background: #2d479c;
                 }
                 &.create {
                     margin-left: 15px;
                     color: #666666;
-                    background: #EFF0F0;
+                    background: #eff0f0;
                 }
             }
         }
