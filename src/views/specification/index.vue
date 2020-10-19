@@ -21,9 +21,12 @@
             <div class="container" ref="wrapper">
                 <div>
                     <section v-for="(item,index) of pageList" :key="item.id">
-                        <div
-                            class="subtitle"
-                        >{{item.enname}} 【{{item.classificationContentList.length}} Selections】</div>
+                        <div class="subtitle">
+                            {{item.enname}}
+                            <span
+                                class="number"
+                            >({{item.classificationContentList.length}} Selections)</span>
+                        </div>
                         <div class="listData" ref="listWrapper">
                             <ul class="content">
                                 <template v-for="(item1,index1) of item.classificationContentList">
@@ -52,19 +55,24 @@
                                             >取消</div>
                                         </div>
                                         <li
-                                            :class="item.classificationContentList[index1].active && item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item active colorItem' : item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item colorItem' : item.classificationContentList[index1].active ? 'item active' : 'item'"
                                             @click="itemClick(index,index1,item.id,$refs[`popover${index}-${index1}`][0])"
                                             slot="reference"
                                         >
                                             <div
-                                                class="colorBox"
-                                                v-if="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'"
-                                                :style="{background:item1.colour}"
-                                            ></div>
-                                            <img
-                                                v-else
-                                                :src="item1.wholePhoto ? $url.baseImgUrl()+item1.wholePhoto : ''"
-                                            />
+                                                :class="item.classificationContentList[index1].active && item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item active colorItem' : item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item colorItem' : item.classificationContentList[index1].active ? 'item active' : 'item'"
+                                            >
+                                                <div
+                                                    class="colorBox"
+                                                    v-if="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'"
+                                                    :style="{background:item1.colour}"
+                                                >
+                                                </div>
+                                                <img
+                                                    v-else
+                                                    :src="item1.wholePhoto ? $url.baseImgUrl()+item1.wholePhoto : ''"
+                                                />
+                                            </div>
+
                                             <div
                                                 class="serial"
                                                 :title="item1.enname"
@@ -263,9 +271,13 @@ export default {
             } else {
                 this.$set(this.showImg, name, "");
             }
-            if(superior.id == "a0a897acabc948789fa70d2eb4a309e5" || superior.id == "8a323f445ccd4328aad6e84b2523b35b"){ //刀头 孔型id
-                this.magnifyingImg = data.detailsPhoto;
-            }
+            // if (
+            //     superior.id == "a0a897acabc948789fa70d2eb4a309e5" ||
+            //     superior.id == "8a323f445ccd4328aad6e84b2523b35b"
+            // ) {
+            //     //刀头 孔型id
+            //     this.magnifyingImg = data.detailsPhoto;
+            // }
             this.showImg = Object.assign(this.showImg, {});
             this.$set(this.priceObj, name, data.enprice);
             this.setPriceCount();
@@ -342,8 +354,12 @@ export default {
                 });
                 classList.active = true;
                 this.seekColorItem();
-                if(data.id != "a0a897acabc948789fa70d2eb4a309e5" || data.id != "8a323f445ccd4328aad6e84b2523b35b"){ //刀头 孔型id
-                    this.magnifyingImg = ''
+                if (
+                    data.id != "a0a897acabc948789fa70d2eb4a309e5" &&
+                    data.id != "8a323f445ccd4328aad6e84b2523b35b"
+                ) {
+                    //刀头 孔型id
+                    this.magnifyingImg = "";
                 }
             }
             if (classList.isAppearance == "1") {
@@ -404,7 +420,7 @@ export default {
                 }
             }
             if (
-                Object.keys(currentDtcx).length == 0 &&
+                Object.keys(currentDtcx).length == 0 ||
                 Object.keys(currentBtkx).length == 0
             ) {
                 this.$message.warning("没有找到对应的锯片,请重新选择");
@@ -429,6 +445,12 @@ export default {
                 this.$set(this.showImg, currentDtcx.id, wholePhoto1);
                 this.$set(this.showImg, currentBtkx.id, wholePhoto2);
             } else {
+                if(currentBtkx.detailsPhoto && currentBtkx.isDetails == '1'){
+                    this.magnifyingImg = currentBtkx.detailsPhoto;
+                }
+                if(currentDtcx.detailsPhoto && currentDtcx.isDetails == '1'){
+                    this.magnifyingImg = currentDtcx.detailsPhoto;
+                }
                 this.$set(this.priceObj, colorData.id, activeColor.enprice);
                 this.setPriceCount();
                 this.$set(this.showImg, currentDtcx.id, "");
@@ -499,6 +521,12 @@ export default {
             if (classList.active === true && subListIndex !== null) {
                 this.$set(this.priceObj, id, classList.enprice);
                 this.setPriceCount();
+                if(currentBtkx.detailsPhoto && currentBtkx.isDetails == '1'){
+                    this.magnifyingImg = currentBtkx.detailsPhoto;
+                }
+                if(currentDtcx.detailsPhoto && currentDtcx.isDetails == '1'){
+                    this.magnifyingImg = currentDtcx.detailsPhoto;
+                }
                 if (
                     this.dtcxindex != null &&
                     this.btkxindex != null &&
@@ -599,11 +627,9 @@ export default {
     transform: translate(-50%, -50%);
     width: 1920px;
     height: 1080px;
-    background: url("~@/assets/img/bg.jpg");
-    background-size: 100% 100%;
     ::-webkit-scrollbar {
         /*滚动条整体样式*/
-        width: 7px; /*高宽分别对应横竖滚动条的尺寸*/
+        width: 12px; /*高宽分别对应横竖滚动条的尺寸*/
         height: 1px;
     }
     ::-webkit-scrollbar-thumb {
@@ -666,20 +692,22 @@ export default {
     }
     .logo {
         position: absolute;
-        left: 42px;
-        top: 35px;
+        left: 53px;
+        top: 53px;
         .logo_img {
-            width: 221px;
-            height: 110px;
+            width: 124px;
+            height: 152px;
         }
     }
     .price {
         position: absolute;
-        left: 52px;
-        bottom: 41px;
-        font-size: 24px;
-        font-weight: 400;
-        color: #ffffff;
+        left: 53px;
+        bottom: 47px;
+        font-size: 36px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #333333;
+        letter-spacing: 1px;
     }
     .show {
         position: absolute;
@@ -744,14 +772,16 @@ export default {
         float: right;
         width: 850px;
         height: 100%;
-        border-radius: 20px 0px 0px 20px;
+        border-radius: 8px 0px 0px 8px;
         background: #fff;
+        box-shadow: 0px 4px 19px 0px #e7e7e7;
         .title {
             height: 100px;
             line-height: 100px;
             text-align: center;
-            font-size: 24px;
-            font-weight: 400;
+            font-size: 25px;
+            font-weight: 500;
+            letter-spacing: 1px;
         }
         .container {
             position: relative;
@@ -773,59 +803,92 @@ export default {
                     height: 42px;
                     font-size: 22px;
                     font-weight: 400;
-                    color: #1f2531;
+                    color: #333333;
+                    .number {
+                        font-size: 16px;
+                        color: #666666;
+                        margin-left: 5px;
+                    }
                 }
                 .listData {
                     position: relative;
                     max-height: 390px;
                     overflow-y: auto;
                     border: 1px solid transparent;
-                    /* 或者是添加 padding: 1px*/
                     box-sizing: border-box;
+                    
+                    &::-webkit-scrollbar {
+                        /*滚动条整体样式*/
+                        width: 8px; /*高宽分别对应横竖滚动条的尺寸*/
+                        height: 1px;
+                    }
                     .content {
                         overflow: hidden;
-                        .item {
+                        li {
                             float: left;
-                            width: 105px;
-                            height: 115px;
-                            background: #f7f7f7;
-                            border-radius: 22px;
-                            margin-right: 20px;
-                            margin-bottom: 15px;
-                            text-align: center;
-                            display: flex;
-                            justify-content: center;
-                            flex-wrap: wrap;
-                            padding: 5px 0;
                             position: relative;
-                            border: 1px solid transparent;
-                            outline: none;
                             cursor: pointer;
-                            &.colorItem {
-                                background: #fff;
-                                height: 80px;
-                                .colorBox {
-                                    width: 40px;
-                                    height: 40px;
-                                    border-radius: 50%;
+                            .item {
+                                width: 105px;
+                                height: 105px;
+                                background: #f7f7f7;
+                                border-radius: 5px;
+                                margin-right: 20px;
+                                margin-bottom: 52px;
+                                text-align: center;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                flex-wrap: wrap;
+                                border: 1px solid transparent;
+                                outline: none;
+                                &.colorItem {
+                                    background: #fff;
+                                    height: 80px;
+                                    .colorBox {
+                                        width: 40px;
+                                        height: 40px;
+                                        border-radius: 50%;
+                                        position: relative;
+                                    }
+                                    &.active{
+                                        border: none;
+                                        background: transparent;
+                                        .colorBox{
+                                            &::after{
+                                                content: '';
+                                                display: block;
+                                                position: absolute;
+                                                left: 50%;
+                                                top: 50%;
+                                                transform: translate(-50%, -50%);
+                                                border: 1px solid #000;
+                                                width: 50px;
+                                                height: 50px;
+                                                border-radius: 50%;
+                                            }
+                                        }                                        
+                                    }
                                 }
-                            }
-                            &.active {
-                                border: 1px solid #246faf;
-                                background: #f0f3fa;
-                            }
-                            img {
-                                max-width: 85px;
-                                max-height: 85px;
+                                &.active {
+                                    border: 1px solid #2D479C;
+                                    background: #F7F7F7;
+                                }
+                                img {
+                                    max-width: 85px;
+                                    max-height: 85px;
+                                }
                             }
                             .serial {
                                 position: absolute;
-                                bottom: 1.5px;
-                                width: 100%;
+                                bottom: 18px;
+                                width: 105px;
                                 font-size: 16px;
                                 overflow: hidden;
                                 text-overflow: ellipsis;
                                 white-space: nowrap;
+                                text-align: center;
+                                margin-right: 20px;
                             }
                         }
                     }
@@ -837,24 +900,24 @@ export default {
             justify-content: center;
             margin-top: 30px;
             & > div {
-                width: 207px;
+                width: 202px;
                 height: 49px;
-                font-size: 18px;
+                font-size: 22px;
                 font-weight: 400;
                 line-height: 49px;
+                letter-spacing: 1px;
                 cursor: pointer;
+                border-radius: 5px;
                 text-align: center;
                 &.reset {
-                    background: url("~@/assets/img/btn_bg1.png");
-                    background-size: 100% 100%;
                     margin-right: 15px;
                     color: #ffffff;
+                    background: #2D479C;
                 }
                 &.create {
-                    background: url("~@/assets/img/btn_bg2.png");
-                    background-size: 100% 100%;
                     margin-left: 15px;
-                    color: #909090;
+                    color: #666666;
+                    background: #EFF0F0;
                 }
             }
         }
