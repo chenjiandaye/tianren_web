@@ -4,9 +4,45 @@
     box-sizing: border-box;
 }
 
+
+@font-face {
+    font-family: 'AlibabaPuHuiTi';
+    src: url('~@/font/Alibaba-PuHuiTi-Regular.otf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'AlibabaPuHuiTi-Bold';
+    src: url('~@/font/Alibaba-PuHuiTi-Bold.otf');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'AlibabaPuHuiTi-Light';
+    src: url('~@/font/Alibaba-PuHuiTi-Light.otf');
+    font-weight: lighter;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'AlibabaPuHuiTi-Medium';
+    src: url('~@/font/Alibaba-PuHuiTi-Medium.otf');
+    font-weight: Medium;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'AlibabaPuHuiTi-Heavy';
+    src: url('~@/font/Alibaba-PuHuiTi-Heavy.otf');
+    font-weight: 800;
+    font-style: normal;
+}
+
 html,body{
     color: #333333;
-    font-family: PingFang SC;
+    font-family: AlibabaPuHuiTi, Arial , "Microsoft Yahei";
     font-size: 16px;
 }
 

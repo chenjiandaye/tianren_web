@@ -20,6 +20,10 @@ module.exports = {
         // config.plugins.delete('prefetch')
         // 修复HMR
         config.resolve.symlinks(true);
+        config.plugin('html').tap(args => {
+            args[0].title= 'SKY-BLADE'
+            return args
+        })
     },
     configureWebpack: () => {},
     // vue-loader 配置项

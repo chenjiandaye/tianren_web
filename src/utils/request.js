@@ -2,7 +2,7 @@ import axios from 'axios'
 import merge from 'lodash/merge'
 import qs from 'qs'
 import { MessageBox, Message } from 'element-ui'
-console.log()
+
 const service = axios.create({
     baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
     timeout: 50000, // request timeout

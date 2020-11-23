@@ -3,147 +3,164 @@
         <div class="logo">
             <img src="../../assets/img/logo.png" class="logo_img" />
         </div>
-        <div class="price">Final Price - USD {{priceCount}}</div>
+        <!-- <div class="price" v-if="priceNameShow">{{priceName}} {{priceCount}}</div> 暂时不开放价格显示的功能 -->
         <div class="show">
             <img src="../../assets/img/defult.png" v-show="defultImgShow" />
             <template v-for="(item,key) in showImg">
                 <img :key="key" v-if="item" :src=" $url.baseImgUrl() + item" />
             </template>
+        </div>
+        <div class="choice">
             <div class="magnifying" v-if="magnifyingImg">
-                <div class="circle"></div>
                 <div class="diamond">
                     <img :src="$url.baseImgUrl() + magnifyingImg" />
                 </div>
             </div>
-        </div>
-        <div class="choice">
-            <div class="title">Make Your Choice Here</div>
+            <div class="title">MAKE YOUR CHOICE HERE</div>
             <div class="container" ref="wrapper">
-                <div>
-                    <section v-for="(item,index) of pageList" :key="item.id">
-                        <div class="subtitle">
-                            {{item.enname}}
-                            <span
-                                class="number"
-                            >({{item.classificationContentList.length}} Selections)</span>
-                        </div>
-                        <div class="listData" ref="listWrapper">
-                            <ul class="content">
-                                <template v-for="(item1,index1) of item.classificationContentList">
-                                    <el-popover
-                                        :ref="`popover${index}-${index1}`"
-                                        placement="top"
-                                        width="360"
-                                        trigger="click"
-                                        :key="item1.id"
-                                        :disabled="item1.isDetails == '0' || item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'"
+                <section v-for="(item,index) of pageList" :key="item.id">
+                    <div
+                        class="subtitle"
+                    >{{item.enname}} ({{item.classificationContentList.length}} Selections)</div>
+                    <div
+                        :class="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'listData colorL' : 'listData'"
+                        ref="listWrapper"
+                    >
+                        <div 
+                            :class="item.id == 'c62e951ec23d40199612121e3447ca15' || item.id == 'b19db927a77c4d4fa254c1fad9e7c1c6' || item.id == '07aefea35582424e928fd89fa612346c' ? 'content ts' : 'content'"
+                        >
+                            <template v-for="(item1,index1) of item.classificationContentList">
+                                <el-popover
+                                    :ref="`popover${index}-${index1}`"
+                                    placement="top"
+                                    width="360"
+                                    trigger="hover"
+                                    :key="item1.id"
+                                    :disabled="item1.isDetails == '0' || item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'"
+                                >
+                                    <img
+                                        :src="item1.detailsPhoto ? $url.baseImgUrl()+item1.detailsPhoto : ''"
+                                        class="popDetailsPhoto"
+                                    />
+                                    <div class="popDescribe">{{item1.endescribe}}</div>
+                                    <!-- <div
+                                        class="popPrice"
+                                        v-if="priceNameShow"
+                                    >Final Price - USD {{item1.enprice}}</div>-->
+                                    <div class="popFooter">
+                                        <div
+                                            class="ok"
+                                            @click="popOk(item,index,item1,index1,$refs[`popover${index}-${index1}`][0])"
+                                        >CONFIRM</div>
+                                        <!-- <div
+                                            class="cancel"
+                                            @click="$refs[`popover${index}-${index1}`][0].doClose()"
+                                        >取消</div>-->
+                                    </div>
+                                    <div
+                                        @click="itemClick(index,index1,item.id,$refs[`popover${index}-${index1}`][0])"
+                                        slot="reference"
+                                        class="li"
                                     >
-                                        <img
-                                            :src="item1.detailsPhoto ? $url.baseImgUrl()+item1.detailsPhoto : ''"
-                                            class="popDetailsPhoto"
-                                        />
-                                        <div class="popDescribe">{{item1.endescribe}}</div>
-                                        <div class="popPrice">Final Price - USD {{item1.enprice}}</div>
-                                        <div class="popFooter">
-                                            <div
-                                                class="ok"
-                                                @click="popOk(item,index,item1,index1,$refs[`popover${index}-${index1}`][0])"
-                                            >确定</div>
-                                            <div
-                                                class="cancel"
-                                                @click="$refs[`popover${index}-${index1}`][0].doClose()"
-                                            >取消</div>
-                                        </div>
-                                        <li
-                                            @click="itemClick(index,index1,item.id,$refs[`popover${index}-${index1}`][0])"
-                                            slot="reference"
+                                        <div
+                                            v-if="item.id != 'c62e951ec23d40199612121e3447ca15' && item.id != 'b19db927a77c4d4fa254c1fad9e7c1c6' && item.id != '07aefea35582424e928fd89fa612346c'"
+                                            :class="item.classificationContentList[index1].active && item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item active colorItem' : item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item colorItem' : item.classificationContentList[index1].active ? 'item active' : 'item'"
                                         >
                                             <div
-                                                :class="item.classificationContentList[index1].active && item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item active colorItem' : item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item colorItem' : item.classificationContentList[index1].active ? 'item active' : 'item'"
-                                            >
-                                                <div
-                                                    class="colorBox"
-                                                    v-if="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'"
-                                                    :style="{background:item1.colour}"
-                                                >
-                                                    <div
-                                                        class="inCircle"
-                                                        :style="{borderColor:item1.colour}"
-                                                    ></div>
-                                                </div>
-                                                <img
-                                                    v-else
-                                                    :src="item1.wholePhoto ? $url.baseImgUrl()+item1.wholePhoto : ''"
-                                                />
-                                            </div>
+                                                class="colorBox"
+                                                v-if="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'"
+                                                :style="{background:item1.colour}"
+                                            ></div>
+                                            <img
+                                                v-else
+                                                :src="item1.wholePhoto ? $url.baseImgUrl()+item1.wholePhoto : ''"
+                                            />
+                                        </div>
 
-                                            <div
-                                                class="serial"
-                                                :title="item1.enname"
-                                            >{{item1.enname}}</div>
-                                        </li>
-                                    </el-popover>
-                                </template>
-                            </ul>
+                                        <div
+                                            v-if="item.id != 'c62e951ec23d40199612121e3447ca15' && item.id != 'b19db927a77c4d4fa254c1fad9e7c1c6' && item.id != '07aefea35582424e928fd89fa612346c'"
+                                            :class="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'colorS serial' : 'serial'"
+                                            :title="item1.enname"
+                                        >{{item1.enname}}</div>
+                                        <div
+                                            v-if="item.id == 'c62e951ec23d40199612121e3447ca15' || item.id == 'b19db927a77c4d4fa254c1fad9e7c1c6' || item.id == '07aefea35582424e928fd89fa612346c'"
+                                            :class="item.classificationContentList[index1].active ? 'measure active' : 'measure'"
+                                        >{{item1.enname}}</div>
+                                    </div>
+                                </el-popover>
+                            </template>
                         </div>
-                    </section>
-                </div>
+                    </div>
+                </section>
             </div>
             <div class="footer_btn">
-                <div class="reset" @click="resetChange">RESET</div>
                 <div class="create" @click="createChange">CREATE</div>
+                <div class="reset" @click="resetChange">RESET</div>
             </div>
         </div>
         <el-dialog
-            title="保存"
+            title="Save"
             :visible.sync="dialogVisible"
             width="746px"
             :close-on-click-modal="false"
             :modal-append-to-body="false"
         >
-            <el-form ref="dialogForm" :model="form" label-width="110px">
+            <!-- <div class="bladeInfo">
+                <div class="infoBox">
+                    <div class="info" v-for="(item,index) of bladeData" :key="index">
+                        <div class="infoName">{{Object.keys(item)[0]}}</div>
+                        <div class="infoMessage">{{Object.values(item)[0]}}</div>
+                    </div>
+                </div>
+            </div>-->
+            <el-form ref="dialogForm" :model="form" label-width="auto">
+                <div class="title">YOUR BLADE INFORMATIONS</div>
                 <el-form-item
-                    label="锯片名称"
-                    prop="sawBladeName"
-                    :rules="[
-      { required: true, message: '请输入锯片名称', trigger: 'blur' }
-    ]"
+                    :label="Object.keys(item)[0]"
+                    v-for="(item,index) of bladeData"
+                    :key="index"
                 >
-                    <el-input v-model="form.sawBladeName" placeholder="请输入内容"></el-input>
+                    <div style="padding-left:12px;">{{Object.values(item)[0]}}</div>
+                </el-form-item>
+                <div class="title">YOUR INFORMATIONS</div>
+                <el-form-item
+                    label="Name"
+                    prop="name"
+                    :rules="[
+                        { required: true, message: 'name is required', trigger: 'blur' }
+                    ]"
+                >
+                    <el-input v-model="form.name" placeholder="Please enter the content"></el-input>
                 </el-form-item>
                 <el-form-item
-                    label="客户名称"
-                    prop="customerName"
+                    label="Email"
+                    prop="email"
                     :rules="[
-      { required: true, message: '请输入客户名称', trigger: 'blur' }
-    ]"
+                        { required: true, message: 'email is required', trigger: 'blur' },
+                        {type: 'email', message: 'Please enter the correct email address', trigger: 'blur'}
+                    ]"
                 >
-                    <el-input v-model="form.customerName" placeholder="请输入内容"></el-input>
+                    <el-input v-model="form.email" placeholder="Please enter the content"></el-input>
                 </el-form-item>
                 <el-form-item
-                    label="联系电话"
-                    prop="customerPhone"
+                    label="Country"
+                    prop="country"
                     :rules="[
-      { required: true, message: '请输入联系电话', trigger: 'blur' },
-      { pattern:/^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/, message: '请输入合法手机号/电话号', trigger: 'blur' }
-    ]"
+                        { required: true, message: 'country is required', trigger: 'blur' }
+                    ]"
                 >
-                    <el-input v-model="form.customerPhone" placeholder="请输入内容"></el-input>
-                </el-form-item>
-                <el-form-item label="备注" prop="remarks">
-                    <el-input v-model="form.remarks" type="textarea" placeholder="请输入内容"></el-input>
+                    <el-input v-model="form.country" placeholder="Please enter the country"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="dialogOkChange">确 定</el-button>
-                <el-button @click="dialogCancelChange">取 消</el-button>
+                <el-button type="primary" @click="dialogOkChange">Save and exit</el-button>
+                <el-button @click="dialogCancelChange">Back to reset</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 
 <script>
-// import BScroll from "better-scroll";
 import "../../utils/rem.js";
 export default {
     data() {
@@ -159,10 +176,9 @@ export default {
                 bounce: false
             },
             form: {
-                sawBladeName: "",
-                customerName: "",
-                customerPhone: "",
-                remarks: ""
+                name: "",
+                email: "",
+                country: ""
             },
             showImg: {},
             priceObj: {},
@@ -174,7 +190,12 @@ export default {
             btkxindex: null,
             dtcxindex1: null,
             btkxindex1: null,
-            dialogVisible: false
+            dialogVisible: false,
+            bladeData: [],
+            priceName: "",
+            priceNameShow: false,
+            itemDisabled: false,
+            defaultCheckArr: []
         };
     },
     computed: {
@@ -186,13 +207,36 @@ export default {
             return show;
         }
     },
+    created() {
+        this.getListData();
+        this.getSelectPriceSetting();
+    },
     methods: {
+        getSelectPriceSetting() {
+            this.$axios.get("/priceSetting/selectPriceSetting").then(res => {
+                if (res.success) {
+                    if (res.success) {
+                        if (
+                            res.page.length == 0 ||
+                            res.page[0].useable == "0"
+                        ) {
+                            this.priceName = "";
+                            this.priceNameShow = false;
+                        } else {
+                            this.priceName = res.page[0].name;
+                            this.priceNameShow = true;
+                        }
+                    }
+                }
+            });
+        },
         dialogCancelChange() {
             this.dialogVisible = false;
             for (var key in this.form) {
                 this.form[key] = "";
             }
             this.$refs.dialogForm.resetFields();
+            this.resetChange();
         },
         dialogOkChange() {
             this.$refs.dialogForm.validate(valid => {
@@ -235,6 +279,64 @@ export default {
             });
         },
         createChange() {
+            this.bladeData = [];
+            var Outer = "";
+            var Bore = "";
+            var Teeth = "";
+            this.pageList.forEach(item => {
+                var obj = {};
+                if (item.id == "c62e951ec23d40199612121e3447ca15") {
+                    for (var item2 of item.classificationContentList) {
+                        if (item2.active) {
+                            Outer = item2.enname;
+                            break;
+                        }
+                    }
+                    return;
+                }
+                if (item.id == "b19db927a77c4d4fa254c1fad9e7c1c6") {
+                    for (var item2 of item.classificationContentList) {
+                        if (item2.active) {
+                            Bore = item2.enname;
+                            break;
+                        }
+                    }
+                    return;
+                }
+                if (item.id == "07aefea35582424e928fd89fa612346c") {
+                    for (var item2 of item.classificationContentList) {
+                        if (item2.active) {
+                            Teeth = item2.enname;
+                            break;
+                        }
+                    }
+                    return;
+                }
+                obj[item.name] = "None";
+                for (var item2 of item.classificationContentList) {
+                    if (item2.active) {
+                        obj[item.name] = item2.enname;
+                    }
+                }
+                this.bladeData.push(obj);
+            });
+            var a = [];
+            if (Outer) {
+                a.push(Outer);
+            }
+            if (Bore) {
+                a.push(Bore);
+            }
+            if (Teeth) {
+                a.push(Teeth);
+            }
+            var s = "None";
+            if (a.length > 0) {
+                s = a.join(" X ");
+            }
+            this.bladeData.unshift({
+                SPECIFICATIONS: s
+            });
             this.dialogVisible = true;
         },
         resetChange() {
@@ -252,11 +354,32 @@ export default {
             for (var key in this.showImg) {
                 this.priceObj[key] = 0;
             }
+            var colorIsDefaultData = null;
+            var colorIsDefaultList = null;
             this.pageList.forEach(item => {
                 item.classificationContentList.forEach(item1 => {
-                    item1.active = false;
+                    var b = false;
+                    for (var item2 of this.defaultCheckArr) {
+                        if (item2.id == item1.id) {
+                            b = true;
+                            if (item.id == "f3d847cde26c4d02ac0a6d0c37ae9c2f") {
+                                colorIsDefaultData = item;
+                                colorIsDefaultList = item1;
+                            }
+                            break;
+                        }
+                    }
+                    item1.active = b;
                 });
             });
+            colorIsDefaultData &&
+                colorIsDefaultList &&
+                this.pitchColorChange(
+                    colorIsDefaultData.id,
+                    colorIsDefaultList,
+                    colorIsDefaultData,
+                    false
+                );
         },
         setPriceCount() {
             this.priceCount = 0;
@@ -270,11 +393,11 @@ export default {
         popOk(superior, index, data, index1, el) {
             // this.colorInit();
             var name = superior.id;
-            if (data.isAppearance == "1") {
-                this.$set(this.showImg, name, data.wholePhoto);
-            } else {
-                this.$set(this.showImg, name, "");
-            }
+            // if (data.isAppearance == "1" && name != '8a323f445ccd4328aad6e84b2523b35b') {
+            //     this.$set(this.showImg, name, data.wholePhoto);
+            // } else {
+            //     this.$set(this.showImg, name, "");
+            // }
             // if (
             //     superior.id == "a0a897acabc948789fa70d2eb4a309e5" ||
             //     superior.id == "8a323f445ccd4328aad6e84b2523b35b"
@@ -282,7 +405,7 @@ export default {
             //     //刀头 孔型id
             //     this.magnifyingImg = data.detailsPhoto;
             // }
-            this.showImg = Object.assign(this.showImg, {});
+            // this.showImg = Object.assign(this.showImg, {});
             this.$set(this.priceObj, name, data.enprice);
             this.setPriceCount();
             var list = this.pageList[index];
@@ -290,6 +413,42 @@ export default {
                 item.active = false;
             });
             data.active = true;
+            if (name == "8a323f445ccd4328aad6e84b2523b35b") {
+                var ff = 0;
+                for (var item1 of this.pageList) {
+                    if (item1.id == "a0a897acabc948789fa70d2eb4a309e5") {
+                        for (var item2 of item1.classificationContentList) {
+                            if (item2.active) {
+                                ff = 1;
+                            }
+                        }
+                    }
+                }
+                for (var item1 of this.pageList) {
+                    if (item1.id == "f3d847cde26c4d02ac0a6d0c37ae9c2f") {
+                        for (var item2 of item1.classificationContentList) {
+                            if (item2.active) {
+                                ff = 2;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (ff === 1) {
+                    for (var item1 of this.pageList) {
+                        if (item1.id == "f3d847cde26c4d02ac0a6d0c37ae9c2f") {
+                            for (var item2 of item1.classificationContentList) {
+                                if (
+                                    item2.id ==
+                                    "8016fea7875a4a14ab26d98771ad3f5c"
+                                ) {
+                                    item2.active = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             this.$forceUpdate();
             el.doClose();
             this.seekColorItem();
@@ -349,6 +508,7 @@ export default {
             }, 1);
         },
         pitchChange2(id, classList, data, el) {
+            this.$set(this.showImg, id, "");
             if (classList.isDetails == "0") {
                 setTimeout(() => {
                     el.doClose();
@@ -366,11 +526,19 @@ export default {
                     this.magnifyingImg = "";
                 }
             }
-            if (classList.isAppearance == "1") {
-                this.$set(this.showImg, id, classList.wholePhoto);
-            }
-            if (classList.isAppearance == "0") {
-                this.$set(this.showImg, id, "");
+            if (
+                classList.isAppearance == "1" &&
+                id != "8a323f445ccd4328aad6e84b2523b35b" //this.showImg["f3d847cde26c4d02ac0a6d0c37ae9c2f"] == "" &&
+            ) {
+                if (
+                    id == "a0a897acabc948789fa70d2eb4a309e5" &&
+                    this.showImg["f3d847cde26c4d02ac0a6d0c37ae9c2f"] == ""
+                ) {
+                    this.$set(this.showImg, id, classList.wholePhoto);
+                }
+                if (id != "a0a897acabc948789fa70d2eb4a309e5") {
+                    this.$set(this.showImg, id, classList.wholePhoto);
+                }
             }
             if (classList.isDetails != "1") {
                 this.$set(this.priceObj, id, classList.enprice);
@@ -428,32 +596,38 @@ export default {
                 Object.keys(currentBtkx).length == 0
             ) {
                 this.$message.warning("没有找到对应的锯片,请重新选择");
+                this.itemDisabled = true;
                 this.magnifyingImg = "";
                 this.$set(this.priceObj, colorData.id, 0);
                 this.setPriceCount();
                 this.$set(this.showImg, colorData.id, "");
                 var wholePhoto1 = "";
                 var wholePhoto2 = "";
-                for (var item of dtcxData) {
-                    if (item.active && item.isAppearance == "1") {
-                        wholePhoto1 = item.wholePhoto;
-                        break;
-                    }
-                }
+                // for (var item of dtcxData) {
+                //     if (item.active && item.isAppearance == "1") {
+                //         wholePhoto1 = item.wholePhoto;
+                //         break;
+                //     }
+                // }
                 for (var item of btkxData) {
                     if (item.active && item.isAppearance == "1") {
                         wholePhoto2 = item.wholePhoto;
                         break;
                     }
                 }
-                this.$set(this.showImg, currentDtcx.id, wholePhoto1);
-                this.$set(this.showImg, currentBtkx.id, wholePhoto2);
+                // this.$set(this.showImg, '8a323f445ccd4328aad6e84b2523b35b', wholePhoto1);
+                this.$set(
+                    this.showImg,
+                    "a0a897acabc948789fa70d2eb4a309e5",
+                    wholePhoto2
+                );
             } else {
+                this.itemDisabled = false;
                 this.setMagnifying(currentBtkx, currentDtcx);
                 this.$set(this.priceObj, colorData.id, activeColor.enprice);
                 this.setPriceCount();
-                this.$set(this.showImg, currentDtcx.id, "");
-                this.$set(this.showImg, currentBtkx.id, "");
+                // this.$set(this.showImg, '8a323f445ccd4328aad6e84b2523b35b', '');
+                this.$set(this.showImg, "a0a897acabc948789fa70d2eb4a309e5", "");
                 this.$set(
                     this.showImg,
                     "f3d847cde26c4d02ac0a6d0c37ae9c2f",
@@ -491,11 +665,6 @@ export default {
             }
         },
         pitchColorChange(id, classList, data, f) {
-            data.classificationContentList.forEach(item => {
-                item.active = false;
-            });
-            classList.active = !f;
-
             var contentSubList = classList.contentSubList;
             if (contentSubList.length == 0) {
                 this.$message.warning("没有找到对应的锯片,请重新选择");
@@ -544,8 +713,13 @@ export default {
                 (classList.active === true && !currentDtcx.active) ||
                 !currentBtkx.active
             ) {
-                this.$message.warning("没有找到对应的锯片,请重新选择");
+                this.$message.warning("没有找到对应的锯片,请重新选择2");
+                return;
             }
+            data.classificationContentList.forEach(item => {
+                item.active = false;
+            });
+            classList.active = !f;
             if (classList.active === true && subListIndex !== null) {
                 this.$set(this.priceObj, id, classList.enprice);
                 this.setPriceCount();
@@ -556,11 +730,11 @@ export default {
                     this.dtcxindex1 != null &&
                     this.btkxindex1 != null
                 ) {
-                    this.$set(
-                        this.showImg,
-                        this.pageList[this.dtcxindex].id,
-                        ""
-                    );
+                    // this.$set(
+                    //     this.showImg,
+                    //     this.pageList[this.dtcxindex].id,
+                    //     ""
+                    // );
                     this.$set(
                         this.showImg,
                         this.pageList[this.btkxindex].id,
@@ -590,11 +764,11 @@ export default {
                         break;
                     }
                 }
-                this.$set(
-                    this.showImg,
-                    this.pageList[this.dtcxindex].id,
-                    wholePhoto1
-                );
+                // this.$set(
+                //     this.showImg,
+                //     this.pageList[this.dtcxindex].id,
+                //     wholePhoto1
+                // );
                 this.$set(
                     this.showImg,
                     this.pageList[this.btkxindex].id,
@@ -613,12 +787,26 @@ export default {
                         pageList = pageList.filter(
                             item => item.useable === "1"
                         );
+                        var colorIsDefaultData = null;
+                        var colorIsDefaultList = null;
                         pageList.forEach(item => {
                             this.$set(this.showImg, item.id, "");
                             this.priceObj[item.id] = 0;
                             var arr = [];
                             item.classificationContentList.forEach(item1 => {
-                                item1["active"] = false;
+                                if (item1.defaultCheck == 0) {
+                                    item1["active"] = true;
+                                    this.defaultCheckArr.push(item1);
+                                    if (
+                                        item.id ==
+                                        "f3d847cde26c4d02ac0a6d0c37ae9c2f"
+                                    ) {
+                                        colorIsDefaultData = item;
+                                        colorIsDefaultList = item1;
+                                    }
+                                } else {
+                                    item1["active"] = false;
+                                }
                                 if (item1.isEnable === "1") {
                                     arr.push(item1);
                                 }
@@ -626,12 +814,17 @@ export default {
                             item.classificationContentList = arr;
                         });
                         this.pageList = pageList;
+                        colorIsDefaultData &&
+                            colorIsDefaultList &&
+                            this.pitchColorChange(
+                                colorIsDefaultData.id,
+                                colorIsDefaultList,
+                                colorIsDefaultData,
+                                false
+                            );
                     }
                 });
         }
-    },
-    created() {
-        this.getListData();
     }
 };
 </script>
@@ -650,6 +843,8 @@ export default {
     transform: translate(-50%, -50%);
     width: 1920px;
     height: 1080px;
+    max-height: 95vh;
+    background: #efefef;
     ::-webkit-scrollbar {
         /*滚动条整体样式*/
         width: 12px; /*高宽分别对应横竖滚动条的尺寸*/
@@ -684,39 +879,88 @@ export default {
             }
         }
         .el-dialog__body {
-            padding: 30px 50px;
-            .el-input__inner,
-            textarea {
+            padding: 10px 35px;
+            font-size: 18px;
+            .el-input__inner {
                 border: none;
-                background: #f7f7f7;
-            }
-            textarea {
-                height: 155px;
+                background: #efefee;
+                font-size: 18px;
             }
             .el-form-item {
                 margin-bottom: 22px;
+                display: flex;
             }
             .el-form-item__label {
-                font-size: 20px;
+                font-size: 18px;
+                text-align: left;
+                padding-left: 5px;
+                border-radius: 5px;
+                height: 100%;
             }
+            .el-form-item__content {
+                flex: 1;
+                height: 100%;
+                margin-left: 12px !important;
+                background: #efefee;
+            }
+            .title {
+                background: #efefee;
+                padding: 10px;
+                border-radius: 7px;
+                margin-bottom: 15px;
+            }
+            .el-form {
+                margin-top: 15px;
+            }
+            // .bladeInfo{
+            //     .infoBox{
+            //         .info{
+            //             display: flex;
+            //             margin: 15px 0;
+            //             .infoName{
+            //                 width: 110px;
+            //                 background: #efefee;
+            //                 padding: 5px;
+            //                 border-radius: 5px;
+            //             }
+            //             .infoMessage{
+            //                 flex: 1;
+            //                 margin-left: 12px;
+            //                 background: #efefee;
+            //                 padding: 5px;
+            //                 border-radius: 5px;
+            //             }
+            //         }
+            //     }
+            // }
         }
         .el-dialog__footer {
             text-align: center;
             font-size: 24px;
             padding: 0 0 50px 0;
             .el-button {
-                width: 108px;
                 height: 45px;
+                border-radius: 0;
             }
             .el-button--primary {
-                background: #1d5adc;
+                background: #e70010;
+                border: none;
+            }
+            .el-button--default {
+                background: #efefef;
+                border: none;
+                color: #333333;
+            }
+            .el-button.el-button--default:focus,
+            .el-button.el-button--default:hover {
+                color: #333333;
             }
         }
     }
     .logo {
         position: absolute;
-        left: 45px;
-        top: 45px;
+        left: 35px;
+        top: 40px;
         .logo_img {
             width: 124px;
             height: 152px;
@@ -746,40 +990,26 @@ export default {
             left: 0;
             top: 0;
         }
+    }
+    .choice {
+        float: right;
+        position: relative;
+        width: 760px;
+        height: 100%;
+        background: #fff;
         .magnifying {
             position: absolute;
-            top: 637px;
-            left: 538px;
-            .circle {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 105px;
-                height: 105px;
-                border: 8px solid #df0000;
-                border-radius: 50%;
-                &::after {
-                    content: "";
-                    display: block;
-                    width: 10px;
-                    height: 1px;
-                    background: #f7f7f7;
-                    position: absolute;
-                    right: 0px;
-                    bottom: -7px;
-                    transform: rotate(45deg);
-                }
-            }
+            bottom: 220px;
+            left: -220px;
             .diamond {
                 position: absolute;
-                left: 79px;
-                top: 96px;
-                width: 222px;
-                height: 163px;
-                border: 8px solid #df0000;
-                border-radius: 20px;
-                background: #fff;
+                left: 0px;
+                top: 0px;
+                width: 220px;
+                height: 220px;
                 text-align: center;
+                background-color: #fff;
+                background-image: radial-gradient(#151957, #080a21);
                 img {
                     position: absolute;
                     left: 50%;
@@ -790,26 +1020,20 @@ export default {
                 }
             }
         }
-    }
-    .choice {
-        float: right;
-        width: 850px;
-        height: 100%;
-        border-radius: 8px 0px 0px 8px;
-        background: #fff;
-        box-shadow: 0px 4px 19px 0px #e7e7e7;
         .title {
-            height: 100px;
-            line-height: 100px;
-            text-align: center;
-            font-size: 25px;
+            padding-left: 84px;
+            font-size: 32px;
             font-weight: 500;
+            height: 42px;
+            line-height: 1;
             letter-spacing: 1px;
+            margin-bottom: 20px;
+            font-family: AlibabaPuHuiTi-Heavy;
         }
         .container {
             position: relative;
-            padding-left: 40px;
-            padding-right: 15px;
+            padding-left: 84px;
+            padding-right: 100px;
             height: 850px;
             overflow-y: auto;
 
@@ -821,153 +1045,153 @@ export default {
                 }
             }
             section {
-                margin-top: 10px;
-                .subtitle {
-                    height: 42px;
-                    font-size: 22px;
-                    font-weight: 400;
-                    color: #333333;
-                    .number {
-                        font-size: 16px;
-                        color: #666666;
-                        margin-left: 5px;
-                    }
-                }
-                .listData {
-                    position: relative;
-                    max-height: 390px;
-                    overflow-y: auto;
-                    border: 1px solid transparent;
-                    box-sizing: border-box;
+                padding-bottom: 25px;
+            }
+            .subtitle {
+                height: 38px;
+                width: 516px;
+                font-weight: 400;
+                font-size: 24px;
+                color: #333333;
+                font-family: AlibabaPuHuiTi-Bold;
+                border-bottom: 1px solid #d1d2d2;
+                margin-bottom: 18px;
+            }
+            .listData {
+                position: relative;
+                border: 1px solid transparent;
+                box-sizing: border-box;
+                max-height: 420px;
+                overflow-y: auto;
 
-                    &::-webkit-scrollbar {
-                        /*滚动条整体样式*/
-                        width: 8px; /*高宽分别对应横竖滚动条的尺寸*/
-                        height: 1px;
+                &::-webkit-scrollbar {
+                    /*滚动条整体样式*/
+                    width: 8px; /*高宽分别对应横竖滚动条的尺寸*/
+                    height: 1px;
+                }
+                .content {
+                    overflow: hidden;
+                    &.ts{
+                        width: 528px;
                     }
-                    .content {
-                        overflow: hidden;
-                        li {
-                            float: left;
-                            position: relative;
-                            cursor: pointer;
-                            .item {
-                                width: 105px;
-                                height: 105px;
-                                background: #f7f7f7;
-                                border-radius: 5px;
-                                margin-right: 20px;
-                                margin-bottom: 52px;
-                                text-align: center;
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
-                                flex-wrap: wrap;
-                                border: 1px solid transparent;
-                                outline: none;
-                                &.colorItem {
-                                    background: #fff;
-                                    height: 80px;
-                                    .colorBox {
-                                        width: 40px;
-                                        height: 40px;
-                                        border-radius: 50%;
-                                        position: relative;
-                                        .inCircle {
-                                            display: none;
-                                        }
-                                    }
-                                    &.active {
-                                        border: none;
-                                        background: transparent;
-                                        .colorBox {
-                                            .inCircle {
-                                                display: block;
-                                                position: absolute;
-                                                left: 50%;
-                                                top: 50%;
-                                                transform: translate(
-                                                    -50%,
-                                                    -50%
-                                                );
-                                                border: 1px solid;
-                                                width: 50px;
-                                                height: 50px;
-                                                border-radius: 50%;
-                                            }
-                                        }
-                                    }
-                                }
-                                &.active {
-                                    border: 1px solid #2d479c;
-                                    background: #f7f7f7;
-                                }
-                                img {
-                                    max-width: 85px;
-                                    max-height: 85px;
+                    .li {
+                        float: left;
+                        cursor: pointer;
+                        .item {
+                            width: 54px;
+                            height: 54px;
+                            background: #f7f7f7;
+                            border-radius: 5px;
+                            margin-right: 12px;
+                            text-align: center;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            flex-wrap: wrap;
+                            border: 1px solid transparent;
+                            outline: none;
+                            background-color: #fff;
+                            background-image: radial-gradient(#151957, #080a21);
+                            &.colorItem {
+                                background: #fff;
+                                height: 54px;
+                                width: 54px;
+                                margin-right: 12px;
+                                .colorBox {
+                                    width: 100%;
+                                    height: 100%;
                                 }
                             }
-                            .serial {
-                                position: absolute;
-                                bottom: 18px;
-                                width: 105px;
-                                font-size: 16px;
-                                overflow: hidden;
-                                text-overflow: ellipsis;
-                                white-space: nowrap;
-                                text-align: center;
-                                margin-right: 20px;
+                            &.active {
+                                position: relative;
+                                background: #dcdddd;
+                                border: 2px dashed #f00;
+                            }
+                            img {
+                                max-width: 45px;
+                                max-height: 45px;
+                            }
+                        }
+                        .serial {
+                            width: 54px;
+                            font-size: 12px;
+                            word-break: break-all;
+                            text-overflow: ellipsis;
+                            display: -webkit-box;
+                            -webkit-box-orient: vertical;
+                            -webkit-line-clamp: 2;
+                            overflow: hidden;
+                            text-align: center;
+                            margin-right: 12px;
+                            margin-bottom: 8px;
+                            color: #898989;
+                            font-family: AlibabaPuHuiTi-Light;
+                        }
+                        .measure {
+                            height: 54px;
+                            padding: 0 15px;
+                            background: #efefef;
+                            margin-right: 13px;
+                            margin-bottom: 30px;
+                            text-align: center;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            flex-wrap: wrap;
+                            border: 1px solid transparent;
+                            outline: none;
+                            &.active {
+                                background: #e60012;
+                                color: #fff;
                             }
                         }
                     }
                 }
             }
         }
+
         .footer_btn {
             display: flex;
-            justify-content: center;
             margin-top: 30px;
+            padding-left: 84px;
             & > div {
-                width: 202px;
-                height: 49px;
-                font-size: 22px;
-                font-weight: 400;
-                line-height: 49px;
+                width: 252px;
+                height: 52px;
+                font-size: 24px;
+                line-height: 52px;
                 letter-spacing: 1px;
                 cursor: pointer;
-                border-radius: 5px;
                 text-align: center;
                 &.reset {
-                    margin-right: 15px;
-                    color: #ffffff;
-                    background: #2d479c;
+                    background: #efefef;
                 }
                 &.create {
-                    margin-left: 15px;
-                    color: #666666;
-                    background: #eff0f0;
+                    color: #ffffff;
+                    background: #e70010;
+                    margin-right: 12px;
                 }
             }
         }
     }
 }
 .el-popover {
-    padding: 30px;
-    width: 360px !important;
+    padding: 12px;
+    width: 410px !important;
+    font-size: 12px;
+    background-color: #fff;
+    background-image: radial-gradient(#151957, #080a21);
 }
 .popDetailsPhoto {
-    width: 206px;
+    width: 100%;
 }
 .popDescribe {
-    font-size: 16px;
     font-weight: 400;
-    color: #333333;
+    color: #ffffff;
     line-height: 20px;
     margin-bottom: 10px;
     margin-top: 20px;
 }
 .popPrice {
-    font-size: 16px;
     font-family: PingFang SC;
     font-weight: 400;
     color: #da0000;
@@ -977,23 +1201,20 @@ export default {
 .popFooter {
     display: flex;
     justify-content: center;
+    padding-top: 10px;
     & > div {
-        width: 80px;
-        height: 35px;
-        line-height: 35px;
+        width: 100px;
+        height: 30px;
+        line-height: 30px;
         text-align: center;
-        border: 1px solid #cccccc;
-        border-radius: 10px;
-        font-size: 14px;
-        letter-spacing: 5px;
         cursor: pointer;
         &.cancel {
             color: #333333;
+            background: #efefef;
         }
         &.ok {
             color: #ffffff;
-            background: #246faf;
-            margin-right: 20px;
+            background: #e70010;
             border: 0;
         }
     }
