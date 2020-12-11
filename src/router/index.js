@@ -4,20 +4,27 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-const routes = [
-    {
-        path:"/",
+const routes = [{
+        path: "/",
         redirect: '/specification'
     },
     {
-        path:"/specification",
+        path: "/specification",
         component: () => import('@/views/specification/index')
+    },
+    {
+        path: "/create",
+        component: () => import('@/views/specification/createinfo')
     }
 ]
 
-var router =  new VueRouter({
+var router = new VueRouter({
     mode: 'history',
-    scrollBehavior: () => ({y: 0}),
+    scrollBehavior(to, from, savedPosition) {
+        return {
+            y: 0
+        }
+    },
     routes
 })
 export default router;

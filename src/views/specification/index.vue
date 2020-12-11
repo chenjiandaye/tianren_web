@@ -3,22 +3,22 @@
         <div class="logo">
             <img src="../../assets/img/logo.png" class="logo_img" />
         </div>
-        <!-- <div class="price" v-if="priceNameShow">{{priceName}} {{priceCount}}</div> 暂时不开放价格显示的功能 -->
+        <div class="price" v-if="priceNameShow">{{priceName}} {{priceCount}}</div>
         <div class="show">
             <img src="../../assets/img/defult.png" v-show="defultImgShow" />
             <template v-for="(item,key) in showImg">
-                <img :key="key" v-if="item" :src=" $url.baseImgUrl() + item" />
+                <img :key="key" v-if="item" :src="$url.baseImgUrl() + item" />
             </template>
         </div>
         <div class="choice">
-            <div class="magnifying" v-if="magnifyingImg">
+            <!-- <div class="magnifying" v-if="magnifyingImg">
                 <div class="diamond">
                     <img :src="$url.baseImgUrl() + magnifyingImg" />
                 </div>
-            </div>
+            </div> -->
             <div class="title">MAKE YOUR CHOICE HERE</div>
             <div class="container" ref="wrapper">
-                <section v-for="(item,index) of pageList" :key="item.id">
+                <section v-for="(item,index) of pageList" :key="item.id" :id="item.id">
                     <div
                         class="subtitle"
                     >{{item.enname}} ({{item.classificationContentList.length}} Selections)</div>
@@ -26,11 +26,11 @@
                         :class="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'listData colorL' : 'listData'"
                         ref="listWrapper"
                     >
-                        <div 
+                        <div
                             :class="item.id == 'c62e951ec23d40199612121e3447ca15' || item.id == 'b19db927a77c4d4fa254c1fad9e7c1c6' || item.id == '07aefea35582424e928fd89fa612346c' ? 'content ts' : 'content'"
                         >
                             <template v-for="(item1,index1) of item.classificationContentList">
-                                <el-popover
+                                <!-- <el-popover
                                     :ref="`popover${index}-${index1}`"
                                     placement="top"
                                     width="360"
@@ -42,52 +42,58 @@
                                         :src="item1.detailsPhoto ? $url.baseImgUrl()+item1.detailsPhoto : ''"
                                         class="popDetailsPhoto"
                                     />
-                                    <div class="popDescribe">{{item1.endescribe}}</div>
-                                    <!-- <div
+                                <div class="popDescribe">{{item1.endescribe}}</div>-->
+                                <!-- <div
                                         class="popPrice"
                                         v-if="priceNameShow"
-                                    >Final Price - USD {{item1.enprice}}</div>-->
-                                    <div class="popFooter">
+                                >Final Price - USD {{item1.enprice}}</div>-->
+                                <!-- <div class="popFooter">
                                         <div
                                             class="ok"
                                             @click="popOk(item,index,item1,index1,$refs[`popover${index}-${index1}`][0])"
-                                        >CONFIRM</div>
-                                        <!-- <div
+                                >CONFIRM</div>-->
+                                <!-- <div
                                             class="cancel"
                                             @click="$refs[`popover${index}-${index1}`][0].doClose()"
-                                        >取消</div>-->
-                                    </div>
-                                    <div
+                                >取消</div>-->
+                                <!-- </div> -->
+                                <!-- <div
                                         @click="itemClick(index,index1,item.id,$refs[`popover${index}-${index1}`][0])"
                                         slot="reference"
                                         class="li"
+                                >-->
+                                <div
+                                    @click="itemClick(index,index1,item.id)"
+                                    class="li"
+                                    :key="item1.id"
+                                >
+                                    <div
+                                        v-if="item.id != 'c62e951ec23d40199612121e3447ca15' && item.id != 'b19db927a77c4d4fa254c1fad9e7c1c6' && item.id != '07aefea35582424e928fd89fa612346c'"
+                                        :class="item.classificationContentList[index1].active && item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item active colorItem' : item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item colorItem' : item.classificationContentList[index1].active ? 'item active' : 'item'"
                                     >
                                         <div
-                                            v-if="item.id != 'c62e951ec23d40199612121e3447ca15' && item.id != 'b19db927a77c4d4fa254c1fad9e7c1c6' && item.id != '07aefea35582424e928fd89fa612346c'"
-                                            :class="item.classificationContentList[index1].active && item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item active colorItem' : item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item colorItem' : item.classificationContentList[index1].active ? 'item active' : 'item'"
-                                        >
-                                            <div
-                                                class="colorBox"
-                                                v-if="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'"
-                                                :style="{background:item1.colour}"
-                                            ></div>
-                                            <img
-                                                v-else
-                                                :src="item1.wholePhoto ? $url.baseImgUrl()+item1.wholePhoto : ''"
-                                            />
-                                        </div>
-
-                                        <div
-                                            v-if="item.id != 'c62e951ec23d40199612121e3447ca15' && item.id != 'b19db927a77c4d4fa254c1fad9e7c1c6' && item.id != '07aefea35582424e928fd89fa612346c'"
-                                            :class="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'colorS serial' : 'serial'"
-                                            :title="item1.enname"
-                                        >{{item1.enname}}</div>
-                                        <div
-                                            v-if="item.id == 'c62e951ec23d40199612121e3447ca15' || item.id == 'b19db927a77c4d4fa254c1fad9e7c1c6' || item.id == '07aefea35582424e928fd89fa612346c'"
-                                            :class="item.classificationContentList[index1].active ? 'measure active' : 'measure'"
-                                        >{{item1.enname}}</div>
+                                            class="colorBox"
+                                            v-if="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'"
+                                            :style="{background:item1.colour}"
+                                        ></div>
+                                        <img
+                                            v-else
+                                            :src="item1.wholePhoto ? $url.baseImgUrl()+item1.wholePhoto : ''"
+                                        />
                                     </div>
-                                </el-popover>
+
+                                    <div
+                                        v-if="item.id != 'c62e951ec23d40199612121e3447ca15' && item.id != 'b19db927a77c4d4fa254c1fad9e7c1c6' && item.id != '07aefea35582424e928fd89fa612346c'"
+                                        :class="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'colorS serial' : 'serial'"
+                                        :title="item1.enname"
+                                        v-html="item1.enname"
+                                    ></div>
+                                    <div
+                                        v-if="item.id == 'c62e951ec23d40199612121e3447ca15' || item.id == 'b19db927a77c4d4fa254c1fad9e7c1c6' || item.id == '07aefea35582424e928fd89fa612346c'"
+                                        :class="item.classificationContentList[index1].active ? 'measure active' : 'measure'"
+                                    >{{item1.enname}}</div>
+                                </div>
+                                <!-- </el-popover> -->
                             </template>
                         </div>
                     </div>
@@ -98,74 +104,23 @@
                 <div class="reset" @click="resetChange">RESET</div>
             </div>
         </div>
-        <el-dialog
-            title="Save"
-            :visible.sync="dialogVisible"
-            width="746px"
-            :close-on-click-modal="false"
-            :modal-append-to-body="false"
-        >
-            <!-- <div class="bladeInfo">
-                <div class="infoBox">
-                    <div class="info" v-for="(item,index) of bladeData" :key="index">
-                        <div class="infoName">{{Object.keys(item)[0]}}</div>
-                        <div class="infoMessage">{{Object.values(item)[0]}}</div>
-                    </div>
-                </div>
-            </div>-->
-            <el-form ref="dialogForm" :model="form" label-width="auto">
-                <div class="title">YOUR BLADE INFORMATIONS</div>
-                <el-form-item
-                    :label="Object.keys(item)[0]"
-                    v-for="(item,index) of bladeData"
-                    :key="index"
-                >
-                    <div style="padding-left:12px;">{{Object.values(item)[0]}}</div>
-                </el-form-item>
-                <div class="title">YOUR INFORMATIONS</div>
-                <el-form-item
-                    label="Name"
-                    prop="name"
-                    :rules="[
-                        { required: true, message: 'name is required', trigger: 'blur' }
-                    ]"
-                >
-                    <el-input v-model="form.name" placeholder="Please enter the content"></el-input>
-                </el-form-item>
-                <el-form-item
-                    label="Email"
-                    prop="email"
-                    :rules="[
-                        { required: true, message: 'email is required', trigger: 'blur' },
-                        {type: 'email', message: 'Please enter the correct email address', trigger: 'blur'}
-                    ]"
-                >
-                    <el-input v-model="form.email" placeholder="Please enter the content"></el-input>
-                </el-form-item>
-                <el-form-item
-                    label="Country"
-                    prop="country"
-                    :rules="[
-                        { required: true, message: 'country is required', trigger: 'blur' }
-                    ]"
-                >
-                    <el-input v-model="form.country" placeholder="Please enter the country"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="dialogOkChange">Save and exit</el-button>
-                <el-button @click="dialogCancelChange">Back to reset</el-button>
-            </span>
-        </el-dialog>
+        <special-model
+            ref="specialModel"
+            @confirmChange="popOk"
+            :swiperData="swiperData"
+            :priceNameShow="priceNameShow"
+            :modelEnprice="modelEnprice"
+        ></special-model>
     </div>
 </template>
 
 <script>
-import "../../utils/rem.js";
+import { mapState, mapMutations } from "vuex";
+import specialModel from "./specialModel";
 export default {
+    name: "specification",
     data() {
         return {
-            pageList: [],
             options: {
                 scrollbar: {
                     fade: false,
@@ -181,24 +136,29 @@ export default {
                 country: ""
             },
             showImg: {},
+            magnifyingImg: "",
             priceObj: {},
             priceCount: 0,
-            magnifyingImg: "",
             dtcx: [],
             btkx: [],
             dtcxindex: null,
             btkxindex: null,
             dtcxindex1: null,
             btkxindex1: null,
-            dialogVisible: false,
-            bladeData: [],
             priceName: "",
             priceNameShow: false,
             itemDisabled: false,
-            defaultCheckArr: []
+            defaultCheckArr: [],
+            currentDialogData: {
+                father: {},
+                son: {}
+            },
+            swiperData: [],
+            modelEnprice: 0
         };
     },
     computed: {
+        ...mapState(["pageList"]),
         defultImgShow() {
             var show = true;
             for (var key in this.showImg) {
@@ -207,137 +167,141 @@ export default {
             return show;
         }
     },
+    components: {
+        specialModel
+    },
+    activated() {
+        var hash = this.$route.hash.slice(1);
+        if (hash) {
+            this.$nextTick(() => {
+                document.getElementById(hash) &&
+                    document.getElementById(hash).scrollIntoView({
+                        behavior: "smooth"
+                    });
+            });
+        } else {
+            this.getListData();
+            this.getSelectPriceSetting();
+        }
+    },
     created() {
         this.getListData();
         this.getSelectPriceSetting();
     },
     methods: {
+        ...mapMutations([
+            "updateBladeData",
+            "updatePageList",
+            "updateDefaultImg",
+            "updateDetailImg",
+            "updateDetailDesc",
+            "updatePriceCount"
+        ]),
         getSelectPriceSetting() {
             this.$axios.get("/priceSetting/selectPriceSetting").then(res => {
                 if (res.success) {
-                    if (res.success) {
-                        if (
-                            res.page.length == 0 ||
-                            res.page[0].useable == "0"
-                        ) {
-                            this.priceName = "";
-                            this.priceNameShow = false;
-                        } else {
-                            this.priceName = res.page[0].name;
-                            this.priceNameShow = true;
-                        }
+                    if (res.page.length == 0 || res.page[0].useable == "0") {
+                        this.priceName = "";
+                        this.priceNameShow = false;
+                    } else {
+                        this.priceName = res.page[0].name;
+                        this.priceNameShow = true;
                     }
-                }
-            });
-        },
-        dialogCancelChange() {
-            this.dialogVisible = false;
-            for (var key in this.form) {
-                this.form[key] = "";
-            }
-            this.$refs.dialogForm.resetFields();
-            this.resetChange();
-        },
-        dialogOkChange() {
-            this.$refs.dialogForm.validate(valid => {
-                if (valid) {
-                    var dataArr = [];
-                    this.pageList.forEach(item => {
-                        var has = false;
-                        var dataObj = {};
-                        item.classificationContentList.forEach(item1 => {
-                            if (item1.active) {
-                                has = true;
-                                dataObj["contentId"] = item1.id;
-                            }
-                        });
-                        if (has) {
-                            dataObj["classificationId"] = item.id;
-                            dataArr.push(dataObj);
-                        }
-                    });
-                    var data = Object.assign(this.form, {});
-                    data["quotedPrice"] = this.priceCount;
-                    data["offerStatisticsSubList"] = dataArr;
-                    this.$axios({
-                        url: "/offerStatistics/add",
-                        method: "POST",
-                        data
-                    }).then(res => {
-                        if (res.success) {
-                            this.$message.success(res.msg);
-                            this.resetChange();
-                            this.dialogVisible = false;
-                            for (var key in this.form) {
-                                this.form[key] = "";
-                            }
-                        } else {
-                            this.$message.error(res.msg);
-                        }
-                    });
                 }
             });
         },
         createChange() {
-            this.bladeData = [];
             var Outer = "";
             var Bore = "";
             var Teeth = "";
+            var arr = [];
             this.pageList.forEach(item => {
                 var obj = {};
-                if (item.id == "c62e951ec23d40199612121e3447ca15") {
-                    for (var item2 of item.classificationContentList) {
-                        if (item2.active) {
-                            Outer = item2.enname;
-                            break;
-                        }
-                    }
-                    return;
-                }
-                if (item.id == "b19db927a77c4d4fa254c1fad9e7c1c6") {
-                    for (var item2 of item.classificationContentList) {
-                        if (item2.active) {
-                            Bore = item2.enname;
-                            break;
-                        }
-                    }
-                    return;
-                }
-                if (item.id == "07aefea35582424e928fd89fa612346c") {
-                    for (var item2 of item.classificationContentList) {
-                        if (item2.active) {
-                            Teeth = item2.enname;
-                            break;
-                        }
-                    }
-                    return;
-                }
+                // if (item.id == "c62e951ec23d40199612121e3447ca15") {
+                //     for (var item2 of item.classificationContentList) {
+                //         if (item2.active) {
+                //             Outer = item2.enname;
+                //             break;
+                //         }
+                //     }
+                //     return;
+                // }
+                // if (item.id == "b19db927a77c4d4fa254c1fad9e7c1c6") {
+                //     for (var item2 of item.classificationContentList) {
+                //         if (item2.active) {
+                //             Bore = item2.enname;
+                //             break;
+                //         }
+                //     }
+                //     return;
+                // }
+                // if (item.id == "07aefea35582424e928fd89fa612346c") {
+                //     for (var item2 of item.classificationContentList) {
+                //         if (item2.active) {
+                //             Teeth = item2.enname;
+                //             break;
+                //         }
+                //     }
+                //     return;
+                // }
                 obj[item.name] = "None";
+                obj["id"] = item.id;
+                obj["enprice"] = 0;
                 for (var item2 of item.classificationContentList) {
                     if (item2.active) {
                         obj[item.name] = item2.enname;
+                        obj["id"] = item.id;
+                        obj["enprice"] = item2.enprice;
                     }
                 }
-                this.bladeData.push(obj);
+                arr.push(obj);
             });
-            var a = [];
-            if (Outer) {
-                a.push(Outer);
+            this.updateBladeData(arr);
+            var imgUrl1 = "";
+            var desc = "";
+            //8a323f445ccd4328aad6e84b2523b35b
+            a: for (var item1 of this.pageList) {
+                if (item1.id == "8a323f445ccd4328aad6e84b2523b35b") {
+                    b: for (var item2 of item1.classificationContentList) {
+                        if (item2.active) {
+                            imgUrl1 = item2.wholePhoto;
+                            desc = item2.endescribe;
+                            break b;
+                        }
+                    }
+                    break a;
+                }
             }
-            if (Bore) {
-                a.push(Bore);
+            this.updateDetailImg(imgUrl1);
+            this.updateDetailDesc(desc);
+            this.$router.push({ path: "/create" });
+            // var a = [];
+            // if (Outer) {
+            //     a.push(Outer);
+            // }
+            // if (Bore) {
+            //     a.push(Bore);
+            // }
+            // if (Teeth) {
+            //     a.push(Teeth);
+            // }
+            // var s = "None";
+            // if (a.length > 0) {
+            //     s = a.join(" X ");
+            // }
+            // this.bladeData.unshift({
+            //     SPECIFICATIONS: s
+            // });
+            // this.dialogVisible = true;
+        },
+        setPriceCount() {
+            this.priceCount = 0;
+            var count = 0;
+            var obj = this.priceObj;
+            for (var key in obj) {
+                count += obj[key];
             }
-            if (Teeth) {
-                a.push(Teeth);
-            }
-            var s = "None";
-            if (a.length > 0) {
-                s = a.join(" X ");
-            }
-            this.bladeData.unshift({
-                SPECIFICATIONS: s
-            });
-            this.dialogVisible = true;
+            this.priceCount = count;
         },
         resetChange() {
             this.dtcx = [];
@@ -354,6 +318,7 @@ export default {
             for (var key in this.showImg) {
                 this.priceObj[key] = 0;
             }
+            this.setPriceCount();
             var colorIsDefaultData = null;
             var colorIsDefaultList = null;
             this.pageList.forEach(item => {
@@ -381,17 +346,10 @@ export default {
                     false
                 );
         },
-        setPriceCount() {
-            this.priceCount = 0;
-            var count = 0;
-            var obj = this.priceObj;
-            for (var key in obj) {
-                count += obj[key];
-            }
-            this.priceCount = count;
-        },
         popOk(superior, index, data, index1, el) {
             // this.colorInit();
+            var superior = this.currentDialogData.father;
+            var data = this.currentDialogData.son;
             var name = superior.id;
             // if (data.isAppearance == "1" && name != '8a323f445ccd4328aad6e84b2523b35b') {
             //     this.$set(this.showImg, name, data.wholePhoto);
@@ -408,8 +366,8 @@ export default {
             // this.showImg = Object.assign(this.showImg, {});
             this.$set(this.priceObj, name, data.enprice);
             this.setPriceCount();
-            var list = this.pageList[index];
-            list.classificationContentList.forEach(item => {
+            // var list = this.pageList[index];
+            superior.classificationContentList.forEach(item => {
                 item.active = false;
             });
             data.active = true;
@@ -449,70 +407,59 @@ export default {
                     }
                 }
             }
-            this.$forceUpdate();
-            el.doClose();
             this.seekColorItem();
         },
-        itemClick(index, index1, id, el) {
+        itemClick(index, index1, id) {
             var data = this.pageList[index];
+            // if(data.id != '8a323f445ccd4328aad6e84b2523b35b') return
             var classList = data.classificationContentList[index1];
             var f = classList.active;
             if (f && id !== "f3d847cde26c4d02ac0a6d0c37ae9c2f") {
-                this.pitchChange1(id, f, classList, el);
+                this.pitchChange1(id, f, classList);
             }
             if (!f && id !== "f3d847cde26c4d02ac0a6d0c37ae9c2f") {
-                this.pitchChange2(id, classList, data, el);
+                this.pitchChange2(id, classList, data);
             }
             if (id === "f3d847cde26c4d02ac0a6d0c37ae9c2f") {
                 this.pitchColorChange(id, classList, data, f);
             }
             this.$set(this.pageList, index, data);
         },
-        colorInit() {
-            this.dtcx = [];
-            this.btkx = [];
-            this.dtcxindex = null;
-            this.btkxindex = null;
-            this.dtcxindex1 = null;
-            this.btkxindex1 = null;
-            this.$set(
-                this.priceObj,
-                "colf3d847cde26c4d02ac0a6d0c37ae9c2four",
-                0
-            );
-            this.setPriceCount();
-            this.$set(this.showImg, "f3d847cde26c4d02ac0a6d0c37ae9c2f", "");
-            for (var item of this.pageList) {
-                if (item.id === "f3d847cde26c4d02ac0a6d0c37ae9c2f") {
-                    //颜色id
-                    for (var item1 of item.classificationContentList) {
-                        item1.active = false;
-                    }
-                }
-                item.classificationContentList.forEach(item1 => {
-                    if (item1.active && item1.isAppearance == "1") {
-                        this.$set(this.showImg, item.id, item1.wholePhoto);
-                    }
-                });
-            }
-        },
-        pitchChange1(id, f, classList, el) {
+        // colorInit() {
+        //     this.dtcx = [];
+        //     this.btkx = [];
+        //     this.dtcxindex = null;
+        //     this.btkxindex = null;
+        //     this.dtcxindex1 = null;
+        //     this.btkxindex1 = null;
+        //     this.$set(this.priceObj, "f3d847cde26c4d02ac0a6d0c37ae9c2f", 0);
+        //     this.setPriceCount();
+        //     this.$set(this.showImg, "f3d847cde26c4d02ac0a6d0c37ae9c2f", "");
+        //     for (var item of this.pageList) {
+        //         if (item.id === "f3d847cde26c4d02ac0a6d0c37ae9c2f") {
+        //             //颜色id
+        //             for (var item1 of item.classificationContentList) {
+        //                 item1.active = false;
+        //             }
+        //         }
+        //         item.classificationContentList.forEach(item1 => {
+        //             if (item1.active && item1.isAppearance == "1") {
+        //                 this.$set(this.showImg, item.id, item1.wholePhoto);
+        //             }
+        //         });
+        //     }
+        // },
+        pitchChange1(id, f, classList) {
             this.$set(this.showImg, id, "");
             this.magnifyingImg = "";
             this.$set(this.priceObj, id, 0);
             this.setPriceCount();
             classList.active = !f;
             this.seekColorItem();
-            setTimeout(() => {
-                el.doClose();
-            }, 1);
         },
-        pitchChange2(id, classList, data, el) {
+        pitchChange2(id, classList, data) {
             this.$set(this.showImg, id, "");
             if (classList.isDetails == "0") {
-                setTimeout(() => {
-                    el.doClose();
-                }, 1);
                 data.classificationContentList.forEach(item => {
                     item.active = false;
                 });
@@ -520,7 +467,10 @@ export default {
                 this.seekColorItem();
                 if (
                     data.id != "a0a897acabc948789fa70d2eb4a309e5" &&
-                    data.id != "8a323f445ccd4328aad6e84b2523b35b"
+                    data.id != "8a323f445ccd4328aad6e84b2523b35b" &&
+                    data.id != "c62e951ec23d40199612121e3447ca15" &&
+                    data.id != "07aefea35582424e928fd89fa612346c" &&
+                    data.id != "b19db927a77c4d4fa254c1fad9e7c1c6"
                 ) {
                     //刀头 孔型id
                     this.magnifyingImg = "";
@@ -532,13 +482,51 @@ export default {
             ) {
                 if (
                     id == "a0a897acabc948789fa70d2eb4a309e5" &&
-                    this.showImg["f3d847cde26c4d02ac0a6d0c37ae9c2f"] == ""
+                    this.showImg["f3d847cde26c4d02ac0a6d0c37ae9c2f"] == "" &&
+                    !this.showImg["3d63ce5188764149a58a4d339e29eb65"]
                 ) {
                     this.$set(this.showImg, id, classList.wholePhoto);
                 }
                 if (id != "a0a897acabc948789fa70d2eb4a309e5") {
+                    this.$set(
+                        this.showImg,
+                        "f3d847cde26c4d02ac0a6d0c37ae9c2f",
+                        classList.wholePhoto
+                    );
                     this.$set(this.showImg, id, classList.wholePhoto);
                 }
+            }
+            if (
+                id == "8a323f445ccd4328aad6e84b2523b35b" &&
+                classList.isDetails == "1"
+            ) {
+                // data.classificationContentList.forEach(item=>{
+                //     item.active = false;
+                // })
+                // classList.active = true;
+                this.currentDialogData.father = data;
+                this.currentDialogData.son = classList;
+                let list = classList.contentPhoneRelList;
+                if (list.length > 0) {
+                    list.forEach(item => {
+                        item.remark = item.remark.replace(
+                            /(\r\n|\n|\r)/gm,
+                            "<br>"
+                        );
+                    });
+                }
+                this.swiperData = list;
+                this.modelEnprice = classList.enprice;
+                this.$refs.specialModel.title = classList.name;
+                this.$refs.specialModel.dialogVisible = true;
+            }
+            if (
+                id == "8a323f445ccd4328aad6e84b2523b35b" &&
+                classList.isDetails == "0"
+            ) {
+                this.currentDialogData.father = data;
+                this.currentDialogData.son = classList;
+                this.popOk();
             }
             if (classList.isDetails != "1") {
                 this.$set(this.priceObj, id, classList.enprice);
@@ -627,12 +615,21 @@ export default {
                 this.$set(this.priceObj, colorData.id, activeColor.enprice);
                 this.setPriceCount();
                 // this.$set(this.showImg, '8a323f445ccd4328aad6e84b2523b35b', '');
-                this.$set(this.showImg, "a0a897acabc948789fa70d2eb4a309e5", "");
-                this.$set(
-                    this.showImg,
-                    "f3d847cde26c4d02ac0a6d0c37ae9c2f",
-                    currentList.wholePhoto
-                );
+                var f = true;
+                this.updateDefaultImg(currentList.wholePhoto);
+                this.showImg["3d63ce5188764149a58a4d339e29eb65"] && (f = false);
+                if (f) {
+                    this.$set(
+                        this.showImg,
+                        "a0a897acabc948789fa70d2eb4a309e5",
+                        ""
+                    );
+                    this.$set(
+                        this.showImg,
+                        "f3d847cde26c4d02ac0a6d0c37ae9c2f",
+                        currentList.wholePhoto
+                    );
+                }
             }
         },
         setMagnifying(kx, cx) {
@@ -642,7 +639,10 @@ export default {
                 if (
                     item1.id != "f3d847cde26c4d02ac0a6d0c37ae9c2f" &&
                     item1.id != "8a323f445ccd4328aad6e84b2523b35b" &&
-                    item1.id != "a0a897acabc948789fa70d2eb4a309e5"
+                    item1.id != "a0a897acabc948789fa70d2eb4a309e5" &&
+                    item1.id != "c62e951ec23d40199612121e3447ca15" &&
+                    item1.id != "07aefea35582424e928fd89fa612346c" &&
+                    item1.id != "b19db927a77c4d4fa254c1fad9e7c1c6"
                 ) {
                     //颜色，齿形，孔型
                     for (var item2 of item1.classificationContentList) {
@@ -658,7 +658,7 @@ export default {
                     this.magnifyingImg = kx.detailsPhoto;
                 }
                 if (cx.detailsPhoto && cx.isDetails == "1") {
-                    this.magnifyingImg = cx.detailsPhoto;
+                    this.magnifyingImg = cx.wholePhoto;
                 }
             } else {
                 this.magnifyingImg = "";
@@ -713,7 +713,7 @@ export default {
                 (classList.active === true && !currentDtcx.active) ||
                 !currentBtkx.active
             ) {
-                this.$message.warning("没有找到对应的锯片,请重新选择2");
+                this.$message.warning("没有找到对应的锯片,请重新选择");
                 return;
             }
             data.classificationContentList.forEach(item => {
@@ -724,11 +724,15 @@ export default {
                 this.$set(this.priceObj, id, classList.enprice);
                 this.setPriceCount();
                 this.setMagnifying(currentBtkx, currentDtcx);
+                this.updateDefaultImg(contentSubList[subListIndex].wholePhoto);
+                var f = true;
+                this.showImg["3d63ce5188764149a58a4d339e29eb65"] && (f = false);
                 if (
                     this.dtcxindex != null &&
                     this.btkxindex != null &&
                     this.dtcxindex1 != null &&
-                    this.btkxindex1 != null
+                    this.btkxindex1 != null &&
+                    f
                 ) {
                     // this.$set(
                     //     this.showImg,
@@ -775,6 +779,7 @@ export default {
                     wholePhoto2
                 );
                 this.$set(this.showImg, "f3d847cde26c4d02ac0a6d0c37ae9c2f", "");
+                this.updateDefaultImg("");
             }
         },
         getListData() {
@@ -809,11 +814,19 @@ export default {
                                 }
                                 if (item1.isEnable === "1") {
                                     arr.push(item1);
+                                    if (item1["active"]) {
+                                        this.$set(
+                                            this.priceObj,
+                                            item.id,
+                                            item1.enprice
+                                        );
+                                        this.setPriceCount();
+                                    }
                                 }
                             });
                             item.classificationContentList = arr;
                         });
-                        this.pageList = pageList;
+                        this.updatePageList(pageList);
                         colorIsDefaultData &&
                             colorIsDefaultList &&
                             this.pitchColorChange(
@@ -830,12 +843,7 @@ export default {
 </script>
 
 <style lang='scss'>
-#app {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-}
+@import "~@/assets/scss/mixin.scss";
 .specification {
     position: absolute;
     left: 50%;
@@ -845,125 +853,13 @@ export default {
     height: 1080px;
     max-height: 95vh;
     background: #efefef;
-    ::-webkit-scrollbar {
-        /*滚动条整体样式*/
-        width: 12px; /*高宽分别对应横竖滚动条的尺寸*/
-        height: 1px;
-    }
-    ::-webkit-scrollbar-thumb {
-        /*滚动条里面小方块*/
-        border-radius: 10px;
-        background: #cecece;
-    }
-    ::-webkit-scrollbar-track {
-        /*滚动条里面轨道*/
-        border-radius: 10px;
-        background: #ebebeb;
-    }
-    .el-dialog {
-        border-radius: 20px;
-        overflow: hidden;
-        width: 750px !important;
-        .el-dialog__header {
-            height: 60px;
-            background: #efefef;
-            padding: 20px 20px 10px 40px;
-            font-size: 24px;
-            font-weight: 400;
-            .el-dialog__title {
-                font-size: 24px;
-                color: #333333;
-            }
-            .el-dialog__close {
-                font-size: 30px;
-            }
-        }
-        .el-dialog__body {
-            padding: 10px 35px;
-            font-size: 18px;
-            .el-input__inner {
-                border: none;
-                background: #efefee;
-                font-size: 18px;
-            }
-            .el-form-item {
-                margin-bottom: 22px;
-                display: flex;
-            }
-            .el-form-item__label {
-                font-size: 18px;
-                text-align: left;
-                padding-left: 5px;
-                border-radius: 5px;
-                height: 100%;
-            }
-            .el-form-item__content {
-                flex: 1;
-                height: 100%;
-                margin-left: 12px !important;
-                background: #efefee;
-            }
-            .title {
-                background: #efefee;
-                padding: 10px;
-                border-radius: 7px;
-                margin-bottom: 15px;
-            }
-            .el-form {
-                margin-top: 15px;
-            }
-            // .bladeInfo{
-            //     .infoBox{
-            //         .info{
-            //             display: flex;
-            //             margin: 15px 0;
-            //             .infoName{
-            //                 width: 110px;
-            //                 background: #efefee;
-            //                 padding: 5px;
-            //                 border-radius: 5px;
-            //             }
-            //             .infoMessage{
-            //                 flex: 1;
-            //                 margin-left: 12px;
-            //                 background: #efefee;
-            //                 padding: 5px;
-            //                 border-radius: 5px;
-            //             }
-            //         }
-            //     }
-            // }
-        }
-        .el-dialog__footer {
-            text-align: center;
-            font-size: 24px;
-            padding: 0 0 50px 0;
-            .el-button {
-                height: 45px;
-                border-radius: 0;
-            }
-            .el-button--primary {
-                background: #e70010;
-                border: none;
-            }
-            .el-button--default {
-                background: #efefef;
-                border: none;
-                color: #333333;
-            }
-            .el-button.el-button--default:focus,
-            .el-button.el-button--default:hover {
-                color: #333333;
-            }
-        }
-    }
+    @include scrollBar();
     .logo {
         position: absolute;
         left: 35px;
         top: 40px;
         .logo_img {
-            width: 124px;
-            height: 152px;
+            width: 150px;
         }
     }
     .price {
@@ -980,7 +876,7 @@ export default {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        left: 180px;
+        left: 190px;
         width: 780px;
         height: 780px;
         & > img {
@@ -1071,7 +967,7 @@ export default {
                 }
                 .content {
                     overflow: hidden;
-                    &.ts{
+                    &.ts {
                         width: 528px;
                     }
                     .li {
@@ -1141,7 +1037,7 @@ export default {
                             border: 1px solid transparent;
                             outline: none;
                             &.active {
-                                background: #e60012;
+                                background: #313639;
                                 color: #fff;
                             }
                         }
@@ -1167,55 +1063,10 @@ export default {
                 }
                 &.create {
                     color: #ffffff;
-                    background: #e70010;
+                    background: #313639;
                     margin-right: 12px;
                 }
             }
-        }
-    }
-}
-.el-popover {
-    padding: 12px;
-    width: 410px !important;
-    font-size: 12px;
-    background-color: #fff;
-    background-image: radial-gradient(#151957, #080a21);
-}
-.popDetailsPhoto {
-    width: 100%;
-}
-.popDescribe {
-    font-weight: 400;
-    color: #ffffff;
-    line-height: 20px;
-    margin-bottom: 10px;
-    margin-top: 20px;
-}
-.popPrice {
-    font-family: PingFang SC;
-    font-weight: 400;
-    color: #da0000;
-    line-height: 20px;
-    margin-bottom: 23px;
-}
-.popFooter {
-    display: flex;
-    justify-content: center;
-    padding-top: 10px;
-    & > div {
-        width: 100px;
-        height: 30px;
-        line-height: 30px;
-        text-align: center;
-        cursor: pointer;
-        &.cancel {
-            color: #333333;
-            background: #efefef;
-        }
-        &.ok {
-            color: #ffffff;
-            background: #e70010;
-            border: 0;
         }
     }
 }

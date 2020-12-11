@@ -5,6 +5,8 @@ import request from '@/utils/request'
 import App from "./App.vue";
 import router from "./router";
 import address from "@/utils/address";
+import store from './store'
+import "./utils/rem.js";
 
 
 Vue.config.productionTip = false;
@@ -16,5 +18,6 @@ Vue.prototype.$url = address
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount("#app");
