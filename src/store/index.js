@@ -9,7 +9,7 @@ const store = new Vuex.Store({
         defaultImg: '',
         detailImg: '',
         detailDesc: '',
-        keepAlives: 'specification'
+        keepAlives: 'skyblade'
     },
     getters: {
         KEEPALIVES(state) { //监听keepAlives

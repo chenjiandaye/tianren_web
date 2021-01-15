@@ -1,35 +1,52 @@
 <template>
-    <div class="specification">
+    <div class="skyblade">
         <div class="logo">
             <img src="../../assets/img/logo.png" class="logo_img" />
         </div>
-        <div class="price" v-if="priceNameShow">{{priceName}} {{priceCount}}</div>
+        <div class="price" v-if="priceNameShow">{{ priceName }} {{ priceCount }}</div>
         <div class="show">
             <img src="../../assets/img/defult.png" v-show="defultImgShow" />
-            <template v-for="(item,key) in showImg">
+            <template v-for="(item, key) in showImg">
                 <img :key="key" v-if="item" :src="$url.baseImgUrl() + item" />
             </template>
         </div>
         <div class="choice">
+            <div class="close">
+                {{ userName + ' '}}
+                <span @click="logoutHandle()">[退出]</span>
+            </div>
             <!-- <div class="magnifying" v-if="magnifyingImg">
                 <div class="diamond">
                     <img :src="$url.baseImgUrl() + magnifyingImg" />
                 </div>
-            </div> -->
+            </div>-->
             <div class="title">MAKE YOUR CHOICE HERE</div>
             <div class="container" ref="wrapper">
-                <section v-for="(item,index) of pageList" :key="item.id" :id="item.id">
+                <section v-for="(item, index) of pageList" :key="item.id" :id="item.id">
+                    <div class="subtitle">
+                        {{ item.enname }} ({{
+                        item.classificationContentList.length
+                        }}
+                        Selections)
+                    </div>
                     <div
-                        class="subtitle"
-                    >{{item.enname}} ({{item.classificationContentList.length}} Selections)</div>
-                    <div
-                        :class="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'listData colorL' : 'listData'"
+                        :class="
+              item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'
+                ? 'listData colorL'
+                : 'listData'
+            "
                         ref="listWrapper"
                     >
                         <div
-                            :class="item.id == 'c62e951ec23d40199612121e3447ca15' || item.id == 'b19db927a77c4d4fa254c1fad9e7c1c6' || item.id == '07aefea35582424e928fd89fa612346c' ? 'content ts' : 'content'"
+                            :class="
+                item.id == 'c62e951ec23d40199612121e3447ca15' ||
+                item.id == 'b19db927a77c4d4fa254c1fad9e7c1c6' ||
+                item.id == '07aefea35582424e928fd89fa612346c'
+                  ? 'content ts'
+                  : 'content'
+              "
                         >
-                            <template v-for="(item1,index1) of item.classificationContentList">
+                            <template v-for="(item1, index1) of item.classificationContentList">
                                 <!-- <el-popover
                                     :ref="`popover${index}-${index1}`"
                                     placement="top"
@@ -63,35 +80,68 @@
                                         class="li"
                                 >-->
                                 <div
-                                    @click="itemClick(index,index1,item.id)"
+                                    @click="itemClick(index, index1, item.id)"
                                     class="li"
                                     :key="item1.id"
                                 >
                                     <div
-                                        v-if="item.id != 'c62e951ec23d40199612121e3447ca15' && item.id != 'b19db927a77c4d4fa254c1fad9e7c1c6' && item.id != '07aefea35582424e928fd89fa612346c'"
-                                        :class="item.classificationContentList[index1].active && item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item active colorItem' : item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'item colorItem' : item.classificationContentList[index1].active ? 'item active' : 'item'"
+                                        v-if="
+                      item.id != 'c62e951ec23d40199612121e3447ca15' &&
+                      item.id != 'b19db927a77c4d4fa254c1fad9e7c1c6' &&
+                      item.id != '07aefea35582424e928fd89fa612346c'
+                    "
+                                        :class="
+                      item.classificationContentList[index1].active &&
+                      item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'
+                        ? 'item active colorItem'
+                        : item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'
+                        ? 'item colorItem'
+                        : item.classificationContentList[index1].active
+                        ? 'item active'
+                        : 'item'
+                    "
                                     >
                                         <div
                                             class="colorBox"
                                             v-if="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'"
-                                            :style="{background:item1.colour}"
+                                            :style="{ background: item1.colour }"
                                         ></div>
                                         <img
                                             v-else
-                                            :src="item1.wholePhoto ? $url.baseImgUrl()+item1.wholePhoto : ''"
+                                            :src="
+                        item1.wholePhoto
+                          ? $url.baseImgUrl() + item1.wholePhoto
+                          : ''
+                      "
                                         />
                                     </div>
 
                                     <div
-                                        v-if="item.id != 'c62e951ec23d40199612121e3447ca15' && item.id != 'b19db927a77c4d4fa254c1fad9e7c1c6' && item.id != '07aefea35582424e928fd89fa612346c'"
-                                        :class="item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f' ? 'colorS serial' : 'serial'"
+                                        v-if="
+                      item.id != 'c62e951ec23d40199612121e3447ca15' &&
+                      item.id != 'b19db927a77c4d4fa254c1fad9e7c1c6' &&
+                      item.id != '07aefea35582424e928fd89fa612346c'
+                    "
+                                        :class="
+                      item.id == 'f3d847cde26c4d02ac0a6d0c37ae9c2f'
+                        ? 'colorS serial'
+                        : 'serial'
+                    "
                                         :title="item1.enname"
                                         v-html="item1.enname"
                                     ></div>
                                     <div
-                                        v-if="item.id == 'c62e951ec23d40199612121e3447ca15' || item.id == 'b19db927a77c4d4fa254c1fad9e7c1c6' || item.id == '07aefea35582424e928fd89fa612346c'"
-                                        :class="item.classificationContentList[index1].active ? 'measure active' : 'measure'"
-                                    >{{item1.enname}}</div>
+                                        v-if="
+                      item.id == 'c62e951ec23d40199612121e3447ca15' ||
+                      item.id == 'b19db927a77c4d4fa254c1fad9e7c1c6' ||
+                      item.id == '07aefea35582424e928fd89fa612346c'
+                    "
+                                        :class="
+                      item.classificationContentList[index1].active
+                        ? 'measure active'
+                        : 'measure'
+                    "
+                                    >{{ item1.enname }}</div>
                                 </div>
                                 <!-- </el-popover> -->
                             </template>
@@ -102,6 +152,7 @@
             <div class="footer_btn">
                 <div class="create" @click="createChange">CREATE</div>
                 <div class="reset" @click="resetChange">RESET</div>
+                <!-- <div class="reset1" @click="logoutHandle()">LOGIN OUT</div> -->
             </div>
         </div>
         <special-model
@@ -118,9 +169,10 @@
 import { mapState, mapMutations } from "vuex";
 import specialModel from "./specialModel";
 export default {
-    name: "specification",
+    name: "skyblade",
     data() {
         return {
+            userName: "",
             options: {
                 scrollbar: {
                     fade: false,
@@ -171,6 +223,7 @@ export default {
         specialModel
     },
     activated() {
+        this.userName = localStorage.getItem("userNamesa");
         var hash = this.$route.hash.slice(1);
         if (hash) {
             this.$nextTick(() => {
@@ -197,6 +250,24 @@ export default {
             "updateDetailDesc",
             "updatePriceCount"
         ]),
+        //退出登录
+        logoutHandle() {
+            this.$confirm(`确定进行[退出]操作?`, "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            }).then(() => {
+                this.$axios.get("/logout").then(res => {
+                    console.log(res);
+                    if (res && res.success) {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("refreshToken");
+                        localStorage.removeItem("userNamesa");
+                        this.$router.replace({ path: "/login" });
+                    }
+                });
+            });
+        },
         getSelectPriceSetting() {
             this.$axios.get("/priceSetting/selectPriceSetting").then(res => {
                 if (res.success) {
@@ -244,12 +315,12 @@ export default {
                 //     }
                 //     return;
                 // }
-                obj[item.name] = "None";
+                obj[item.enname] = "None";
                 obj["id"] = item.id;
                 obj["enprice"] = 0;
                 for (var item2 of item.classificationContentList) {
                     if (item2.active) {
-                        obj[item.name] = item2.enname;
+                        obj[item.enname] = item2.enname;
                         obj["id"] = item.id;
                         obj["enprice"] = item2.enprice;
                     }
@@ -844,7 +915,7 @@ export default {
 
 <style lang='scss'>
 @import "~@/assets/scss/mixin.scss";
-.specification {
+.skyblade {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -893,6 +964,21 @@ export default {
         width: 760px;
         height: 100%;
         background: #fff;
+        .close {
+            position: absolute;
+            right: 30px;
+            top: 0px;
+            font-size: 20px;
+            // font-weight: 900;
+            // background: url(../../assets/img/tuichu.png) no-repeat center;
+            // background-size: 50px 50px;
+            span {
+                cursor: pointer;
+            }
+            span:hover {
+                color: red;
+            }
+        }
         .magnifying {
             position: absolute;
             bottom: 220px;
@@ -1051,7 +1137,7 @@ export default {
             margin-top: 30px;
             padding-left: 84px;
             & > div {
-                width: 252px;
+                width: 310px;
                 height: 52px;
                 font-size: 24px;
                 line-height: 52px;

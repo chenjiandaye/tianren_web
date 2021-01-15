@@ -6,15 +6,21 @@ Vue.use(VueRouter)
 
 const routes = [{
         path: "/",
-        redirect: '/specification'
+        redirect: '/login'
     },
     {
-        path: "/specification",
-        component: () => import('@/views/specification/index')
+        path: "/login",
+        component: () => import('@/views/skyblade/login')
+    },
+    {
+        path: "/skyblade",
+        component: () => import('@/views/skyblade/index'),
+        meta:{requireAuth:true}
     },
     {
         path: "/create",
-        component: () => import('@/views/specification/createinfo')
+        component: () => import('@/views/skyblade/createinfo'),
+        meta:{requireAuth:true}
     }
 ]
 

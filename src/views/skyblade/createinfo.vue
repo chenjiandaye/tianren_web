@@ -145,7 +145,7 @@ export default {
                             }
                             setTimeout(() => {
                                 this.$router.push({
-                                    path: "/specification"
+                                    path: "/skyblade"
                                 });
                             }, 1000);
                         } else {
@@ -161,12 +161,12 @@ export default {
             }
             this.$refs.dialogForm.resetFields();
             this.$router.push({
-                path: "/specification"
+                path: "/skyblade"
             });
         },
         lineModify(id) {
             this.$router.push({
-                path: "/specification#" + id
+                path: "/skyblade#" + id
             });
         },
         getSelectPriceSetting() {
